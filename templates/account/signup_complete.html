@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}本登録完了{% endblock %}
+
+{% block body_class %}base-body text-center{% endblock %}
+{% block body %}
+ <div class="container mt-5">
+    <p>本登録が完了致しました。</p>
+    <p>登録されたユーザー名とパスワードでログインしてください。</p>
+    <a href="/sample_app">ログインページへ</a>
+</div>
+{% endblock %}

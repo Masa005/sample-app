@@ -1,0 +1,30 @@
+
+.base-body{
+	background:#f0f8ff;
+}
+
+#left-contents{
+    text-align:left;
+}
+
+.top-main{
+	margin:auto;
+	width:20rem;
+	padding-top:10rem;
+    padding-bottom:15rem;
+}
+
+.signup-main{
+    margin:auto;
+    width:40rem;
+    padding-top:3rem;
+    padding-bottom:15rem;
+}
+
+div.signup-main h2{
+    font-size:1.3rem;
+}
+
+div.signup-main label{
+    font-size:0.8rem;
+}

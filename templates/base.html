@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+<html>
+<head lang="ja">
+  <meta charset="UTF-8">
+  {% block js %}{% endblock %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header>
+    <!--ナビゲーションバー-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <h1 class="navbar-brand">SampleApp</h1>
+            <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#bs-navi" aria-controls="bs-navi" aria-expanded="false"
+            aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="bs-navi">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link active" href={% block nav_item1_url %}"#"{% endblock %}>{% block nav_item1_name %}{% endblock %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href={% block nav_item2_url %}"#"{% endblock %}>{% block nav_item2_name %}{% endblock %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href={% block nav_item3_url %}"#"{% endblock %}>{% block nav_item3_name %}{% endblock %}</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!--ナビゲーションバー-->
+{% block body %}
+{% endblock %}
+</body>
+</html>

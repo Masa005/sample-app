@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}ログイン{% endblock %}
+
+{% block body_class %}base-body text-center{% endblock %}
+{% block body %}
+<div class="top-main">
+    <div class="container">
+        <form method="post">
+           {% for error in form.non_field_errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+            {% csrf_token %}
+            <div id="left-contents">
+                {% for field in form %}
+                <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+            <button class="btn btn-primary">ログイン</button>
+            </div>
+        </form>
+        <div>
+        <a href="{% url 'account:signup_init'%}">新規アカウント作成はこちら</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
