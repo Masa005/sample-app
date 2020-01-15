@@ -9,6 +9,7 @@ from django.core.signing import BadSignature, SignatureExpired,loads,dumps
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class LoginView(LoginView):
     """
@@ -106,3 +107,9 @@ class SignupCompleteView(generic.TemplateView):
             messages.add_message(self.request,messages.ERROR,
                                  'このユーザーはすでに登録済みです')
             return redirect('sample_app:error')
+
+class OptionView(LoginRequiredMixin,generic.TemplateView):
+    """
+    設定画面用View
+    """
+    template_name ="account/option.html"

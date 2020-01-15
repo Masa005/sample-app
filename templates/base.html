@@ -9,6 +9,7 @@
   {% block js %}{% endblock %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
   <title>{% block title %}{% endblock %}</title>
+  <script src="https://kit.fontawesome.com/64702c5d4e.js" crossorigin="anonymous"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <header>
@@ -25,6 +26,7 @@
                     <li class="nav-item"><a class="nav-link active" href={% block nav_item1_url %}"#"{% endblock %}>{% block nav_item1_name %}{% endblock %}</a></li>
                     <li class="nav-item"><a class="nav-link" href={% block nav_item2_url %}"#"{% endblock %}>{% block nav_item2_name %}{% endblock %}</a></li>
                     <li class="nav-item"><a class="nav-link" href={% block nav_item3_url %}"#"{% endblock %}>{% block nav_item3_name %}{% endblock %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href={% block nav_item4_url %}"#"{% endblock %}>{% block nav_item4_name %}{% endblock %}</a></li>
                 </ul>
             </div>
         </nav>

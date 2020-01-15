@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block js %}<script type="text/javascript" src="{% static 'js/post.js' %}" defer></script>{% endblock %}
-{% block title %}ホーム{% endblock %}
+{% block title %}タイムライン{% endblock %}
 
 {% block nav_item1_url %}"{% url 'short_post:home'%}"{% endblock %}
 {% block nav_item1_name %}ホーム{% endblock %}
@@ -55,17 +55,16 @@
             </div>
             <div class="col-sm-8 pl-0 mt-2">
                 <ul class="nav nav-tabs" role="tablists">
-                    <li class="nav-item "><a href="#post" data-toggle="tab" class="nav-link active text-muted">発言内容</a></li>
-                    <li class="nav-item"><a href="#picture"  data-toggle="tab" class="nav-link text-muted">画像</a></li>
-                    <li class="nav-item"><a href="#favorite"  data-toggle="tab" class="nav-link text-muted">お気に入り</a></li>
+                    <li class="nav-item "><a href="#follower-timeline" data-toggle="tab" class="nav-link active text-muted">フォロー中</a></li>
+                    <li class="nav-item"><a href="#all-timeline"  data-toggle="tab" class="nav-link text-muted">すべて</a></li>
                  </ul>
                 <div class="tab-content text-left">
-                    <div class="tab-pane active fade show" id="post">
+                    <div class="tab-pane active fade show" id="follower-timeline">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
                                 <span class="font-weight-bold h5">名前</span>
                                 <p>発言1</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
+                                <button type="button" class="btn btn-light rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;" id="favolite-btn">
                                     <i class="far fa-star favolite-off" id="favolite-off"></i>
                                     <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
                                 </button>
@@ -73,22 +72,22 @@
                             <li class="list-group-item">
                                 <span class="font-weight-bold h5">名前</span>
                                 <p>発言2</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-                                    <i class="far fa-star favolite-off" id="favolite-off"></i>
-                                    <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
+                                <button type="button" class="btn btn-light rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;">
+                                    <i class="far fa-star favolite-off"></i>
+                                    <i class="fas fa-star favolite-on" style="display: none;"></i>
                                 </button>
                             </li>
                             <li class="list-group-item">
                                 <span class="font-weight-bold h5">名前</span>
                                 <p>発言3</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-                                    <i class="far fa-star favolite-off" id="favolite-off"></i>
-                                    <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
+                                <button type="button" class="btn btn-light rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;">
+                                    <i class="far fa-star favolite-off"></i>
+                                    <i class="fas fa-star favolite-on" style="display: none;"></i>
                                 </button>
                             </li>
                         </ul>
                     </div>
-                    <div class="tab-pane fade" id="picture">
+                    <div class="tab-pane fade" id="all-timeline">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">画像1</li>
                             <li class="list-group-item">画像2</li>
