@@ -21,3 +21,7 @@ div.signup-main label{
 .favolite-on{
     color: #F7D358;
 }
+
+.scroll {
+  overflow-y: auto;
+}

@@ -2,6 +2,7 @@ import factory
 from django.contrib.auth import get_user_model
 import uuid
 User = get_user_model()
+import datetime
 
 class UserFactory(factory.django.DjangoModelFactory):
     """
@@ -19,3 +20,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     birthday = factory.Faker('date_of_birth',minimum_age=0, maximum_age=115)
     is_staff = 0
     is_active = 1
+    date_joined = datetime.datetime.now()

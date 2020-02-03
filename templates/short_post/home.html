@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% block js %}<script type="text/javascript" src="{% static 'js/post.js' %}" defer></script>{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{% static 'js/post.js' %}"></script>
+{% endblock %}
 {% block title %}ホーム{% endblock %}
 
 {% block nav_item1_url %}"{% url 'short_post:home'%}"{% endblock %}
@@ -15,16 +17,16 @@
 
 {% block body_class %}base-body text-center{% endblock %}
 {% block body %}
-    <div class="container mt-4 mb-4 border">
-        <div class="row">
-            <div class="col-sm-4 mt-2">
+    <div class="container mt-3 border">
+        <div class="row p-2">
+            <div class="col-sm-4">
                 <div class="card">
                     <div class="card-body p-3 text-left">
                         <div class="card-title mb-0">
-                            <span class="font-weight-bold h4">名前</span>
+                            <span class="font-weight-bold h4">{{ user.name }}</span>
                         </div>
                         <div class="card-subtitle text-muted mb-2">
-                            username
+                            {{ user.username }}
                         </div>
                         <p class="card-text">ひとこと</p>
                     </div>
@@ -37,75 +39,51 @@
                     </div>
                     </div>
                 </div>
-                <div class="mt-5 mb-5">
-                <div class="card">
-                    <div class="card-body text-left">
-                        <label class="font-weight-bold">内容</label>
-                         <form>
-                            <div class="form-group">
-                                <textarea class="form-control" rows="5"></textarea>
-                            </div>
-                            <div class="form-group text-right">
-                                <button class="btn btn-primary">発言</button>
-                            </div>
-                        </form>
+                <div class="mt-3">
+                    <div class="card">
+                        <div class="card-body text-left">
+                            <form method="post">
+                                <div class="form-group">
+                                    <div class="text-danger">
+                                        {{ form.content.errors }}
+                                     </div>
+                                    <label class="font-weight-bold">内容</label>
+                                    {{ form.content }}
+                                </div>
+                                <div class="form-group text-right">
+                                    <button class="btn btn-primary">投稿</button>
+                                </div>
+                                {% csrf_token %}
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
             <div class="col-sm-8 pl-0 mt-2">
                 <ul class="nav nav-tabs" role="tablists">
-                    <li class="nav-item "><a href="#post" data-toggle="tab" class="nav-link active text-muted">発言内容</a></li>
-                    <li class="nav-item"><a href="#picture"  data-toggle="tab" class="nav-link text-muted">画像</a></li>
+                    <li class="nav-item "><a href="#post" data-toggle="tab" class="nav-link active text-muted">投稿内容</a></li>
                     <li class="nav-item"><a href="#favorite"  data-toggle="tab" class="nav-link text-muted">お気に入り</a></li>
                  </ul>
-                <div class="tab-content text-left">
+                <div class="tab-content text-left" style="overflow-y:scroll; height:35rem;">
                     <div class="tab-pane active fade show" id="post">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <span class="font-weight-bold h5">名前</span>
-                                <p>発言1</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-                                    <i class="far fa-star favolite-off" id="favolite-off"></i>
-                                    <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
-                                </button>
-                            </li>
-                            <li class="list-group-item">
-                                <span class="font-weight-bold h5">名前</span>
-                                <p>発言2</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-                                    <i class="far fa-star favolite-off" id="favolite-off"></i>
-                                    <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
-                                </button>
-                            </li>
-                            <li class="list-group-item">
-                                <span class="font-weight-bold h5">名前</span>
-                                <p>発言3</p>
-                                <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem; background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-                                    <i class="far fa-star favolite-off" id="favolite-off"></i>
-                                    <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
-                                </button>
-                            </li>
+	                       {% for post in user_post_list %}
+	                           <li class="list-group-item">
+	                               <span class="font-weight-bold h6">{{ post.user.name }}</span>
+	                               <p>{{ post.content | linebreaksbr}}</p>
+	                               <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
+	                                background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
+	                                   <i class="far fa-star favolite-off" id="favolite-off"></i>
+	                                   <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
+	                               </button>
+	                           </li>
+	                       {% endfor %}
                         </ul>
-                    </div>
-                    <div class="tab-pane fade" id="picture">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">画像1</li>
-                            <li class="list-group-item">画像2</li>
-                            <li class="list-group-item">画像3</li>
-                                                        <li class="list-group-item">画像1</li>
-                            <li class="list-group-item">画像2</li>
-                            <li class="list-group-item">画像3</li>
-                                                        <li class="list-group-item">画像1</li>
-                            <li class="list-group-item">画像2</li>
-                            <li class="list-group-item">画像3</li>
-                                                        <li class="list-group-item">画像1</li>
-                            <li class="list-group-item">画像2</li>
-                            <li class="list-group-item">画像3</li>
-                                                        <li class="list-group-item">画像1</li>
-                            <li class="list-group-item">画像2</li>
-                            <li class="list-group-item">画像3</li>
-                        </ul>
+                        <div id="end"></div>
+                        {% if user_post_list.has_next %}
+                            <input class="page" type="hidden" value="{{ user_post_list.next_page_number }}"/>
+                            <input class="has-next" type="hidden" value="{{ user_post_list.has_next }}"/>
+                        {% endif %}
                     </div>
                     <div class="tab-pane fade" id="favorite">
                         <ul class="list-group list-group-flush">
