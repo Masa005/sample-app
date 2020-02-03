@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     'widget_tweaks',
     'account',
-    'short_post'
+    'short_post',
+    'rest_framework',
 ]
 
 # Application definition

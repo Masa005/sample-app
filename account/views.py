@@ -18,7 +18,6 @@ class LoginView(LoginView):
     template_name ="account/login.html"
     form_class = LoginForm
 
-
 class SignupView(generic.CreateView):
     """
     新規登録画面用View

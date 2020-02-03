@@ -65,7 +65,7 @@ class SignupViewTest(TestCase):
 
     def test_form_valid(self):
         """
-        form_validメソッドのテスト
+        登録成功時のテスト
         """
         params = dict(
             username ='testuser',
@@ -91,7 +91,7 @@ class SignupViewTest(TestCase):
 
     def test_form_invalid(self):
         """
-        form_invalidメソッドのテスト
+        登録失敗時のテスト
         """
         params = dict(
             username ='testuser',
