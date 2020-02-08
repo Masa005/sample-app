@@ -9,6 +9,7 @@ import json
 
 User = get_user_model()
 
+
 class HomeViewTest(TestCase):
     """
     HomeViewのテストクラス
@@ -20,7 +21,8 @@ class HomeViewTest(TestCase):
         for i in range(100):
             test_content = i + 1
             test_date_joined = test_date_joined + datetime.timedelta(days=i)
-            PostContentFactory(content=test_content,user=test_user,date_joined=test_date_joined)
+            PostContentFactory(content=test_content,
+                               user=test_user, date_joined=test_date_joined)
 
     def login(self):
         """
@@ -43,7 +45,7 @@ class HomeViewTest(TestCase):
         """
         url = reverse('short_post:home')
         redirect_url = reverse('account:login')
-        res = self.client.get(url,follow=True)
+        res = self.client.get(url, follow=True)
         self.assertRedirects(res, redirect_url)
 
     def test_get_context_data(self):
@@ -56,13 +58,13 @@ class HomeViewTest(TestCase):
         user_post_list = res.context['user_post_list']
         count = 0
         test_content_list = list()
-        for i in reversed(range(91,101)):
+        for i in reversed(range(91, 101)):
             test_content_list.append(str(i))
 
         for post in user_post_list:
-            #初期表示投稿内容一覧確認
-            self.assertEqual(post.content,test_content_list[count])
-            count+=1
+            # 初期表示投稿内容一覧確認
+            self.assertEqual(post.content, test_content_list[count])
+            count += 1
 
     def test_post_load_api_succes(self):
         """
@@ -76,13 +78,13 @@ class HomeViewTest(TestCase):
         user_post_list = res_content['user_post_list']
         count = 0
         test_content_list = list()
-        for i in reversed(range(51,61)):
+        for i in reversed(range(51, 61)):
             test_content_list.append(str(i))
 
         for post in user_post_list:
-            #投稿内容一覧確認
-            self.assertEqual(post['content'],test_content_list[count])
-            count+=1
+            # 投稿内容一覧確認
+            self.assertEqual(post['content'], test_content_list[count])
+            count += 1
 
     def test_post_load_api_not_exist(self):
         """
@@ -110,35 +112,37 @@ class HomeViewTest(TestCase):
 
         """
         params = dict(
-            content ='テスト投稿内容',
+            content='テスト投稿内容',
         )
         url = reverse('short_post:home')
         success_url = reverse('short_post:home')
         self.login()
-        res = self.client.post(url,params,follow=True)
-        #リダイレクト先確認
+        res = self.client.post(url, params, follow=True)
+        # リダイレクト先確認
         self.assertRedirects(res, success_url)
-        #投稿内容登録確認
-        self.assertEqual(PostContent.objects.filter(user = User.objects.get(username='testUser')
-                                                    ,content='テスト投稿内容').count(),1)
+        # 投稿内容登録確認
+        self.assertEqual(PostContent.objects.filter
+                         (user=User.objects.get(username='testUser'),
+                          content='テスト投稿内容').count(), 1)
 
     def test_form_invalid(self):
         """
         投稿失敗時のテスト
         """
-        #文字数超過している投稿内容
+        # 文字数超過している投稿内容
 
         test_content = 'テスト投稿内容あああああああああああああああああああああ' + \
             'あああああああああああああああああああああああああああああああああああああ' + \
             'あああああああああああああああああああああああああああああああああああああ' + \
             'あああああああああああああああああああああああああああああああああああああ' + \
             'ああああああああああああああああああああああああああああああああああ'
-        params = dict(content = test_content,)
+        params = dict(content=test_content,)
         url = reverse('short_post:home')
         self.login()
-        res = self.client.post(url,params,follow=True)
-        #リダイレクトしていないことを確認
+        res = self.client.post(url, params, follow=True)
+        # リダイレクトしていないことを確認
         self.assertEqual(res.status_code, 200)
-        #投稿内容登録確認
-        self.assertEqual(PostContent.objects.filter(user = User.objects.get(username='testUser')
-                                                    ,content=test_content).count(),0)
+        # 投稿内容登録確認
+        self.assertEqual(PostContent.objects.filter
+                         (user=User.objects.get(username='testUser'),
+                          content=test_content).count(), 0)

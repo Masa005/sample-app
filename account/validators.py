@@ -2,6 +2,7 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
+
 @deconstructible
 class UnicodeUseridValidator(validators.RegexValidator):
     regex = r'^[0-9a-zA-Z.@+-]+$'
