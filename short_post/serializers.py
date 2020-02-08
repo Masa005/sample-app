@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 User = get_user_model()
 
+
 class PostContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostContent

@@ -64,7 +64,7 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,16 +93,20 @@ DATABASES
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+        'UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+        'MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+        'CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+        'NumericPasswordValidator',
     },
 ]
 
@@ -130,10 +134,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# # メールをコンソールに表示する
+# メールをコンソールに表示する
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-#アクティベーションURLの期限:1日以内
+# アクティベーションURLの期限:1日以内
 ACTIVATION_TIMEOUT_SECONDS = 60*60*24
 
 # ログインしていないときのリダイレクト先
@@ -160,7 +164,8 @@ LOGGING = {
             'format': '[%(server_time)s] %(message)s a',
         },
         'sample_app': {
-            'format' : '[%(asctime)s] [%(levelname)s] [%(pathname)s] [%(funcName)s]: %(message)s',
+            'format': '[%(asctime)s] [%(levelname)s] [%(pathname)s]'
+            ' [%(funcName)s]: %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         }
 
@@ -185,9 +190,9 @@ LOGGING = {
             'level': 'INFO',
             'filters': ['require_debug_false'],
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when' : 'D',
+            'when': 'D',
             'formatter': 'sample_app',
-            'filename': os.path.join(BASE_DIR,'log/sample_app.log'),
+            'filename': os.path.join(BASE_DIR, 'log/sample_app.log'),
             'encoding': 'utf-8'
         },
     },
@@ -202,7 +207,7 @@ LOGGING = {
             'propagate': False,
         },
         'sample_app': {
-            'handlers': ['console','file'],
+            'handlers': ['console', 'file'],
             'level': 'INFO'
         }
     }

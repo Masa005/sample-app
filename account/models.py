@@ -1,10 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser,UserManager,PermissionsMixin,BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import UserManager
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import BaseUserManager
 from account import validators
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 import uuid
+
 
 class UserManager(BaseUserManager):
     """
@@ -42,7 +46,8 @@ class UserManager(BaseUserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
-class UserModel(AbstractBaseUser,PermissionsMixin):
+
+class UserModel(AbstractBaseUser, PermissionsMixin):
     """
     ユーザー情報モデル
 
@@ -55,7 +60,8 @@ class UserModel(AbstractBaseUser,PermissionsMixin):
         _('ユーザー名'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_('Required. 150 characters or fewer. Letters,digits'
+                    ' and @/./+/-/_ only.'),
         validators=[userid_validator],
         error_messages={
             'unique': _("このユーザー名は既に登録済みです。"),
@@ -63,17 +69,15 @@ class UserModel(AbstractBaseUser,PermissionsMixin):
         },
     )
     name = models.CharField(_('name'), max_length=180, blank=False)
-    email = models.EmailField(_('email address'),
-            blank=False,unique=True,
-            error_messages={
-            'unique': _("このメールアドレスは既に登録済みです。"),
-        },)
-    birthday = models.DateField(_('生年月日'),null=False)
+    email = models.EmailField(_('email address'), blank=False, unique=True,
+                              error_messages={'unique': _("このメールアドレスは"
+                                                          "既に登録済みです。")}, )
+    birthday = models.DateField(_('生年月日'), null=False)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
-    )
+        help_text=_('Designates whether the user can log into '
+                    'this admin site.'), )
     is_active = models.BooleanField(
         _('active'),
         default=True,
@@ -88,7 +92,7 @@ class UserModel(AbstractBaseUser,PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email','birthday']
+    REQUIRED_FIELDS = ['email', 'birthday']
 
     class Meta:
         db_table = 'user'
