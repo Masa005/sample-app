@@ -25,7 +25,7 @@
                         <div class="card-title mb-0">
                             <span class="font-weight-bold h4">{{ user.name }}</span>
                         </div>
-                        <div class="card-subtitle text-muted mb-2">
+                        <div class="card-subtitle text-muted mb-2" id="{{ user.username }}">
                             {{ user.username }}
                         </div>
                         <p class="card-text">ひとこと</p>
@@ -60,35 +60,68 @@
                 </div>
             </div>
             <div class="col-sm-8 pl-0 mt-2">
+
                 <ul class="nav nav-tabs" role="tablists">
                     <li class="nav-item "><a href="#post" data-toggle="tab" class="nav-link active text-muted">投稿内容</a></li>
                     <li class="nav-item"><a href="#favorite"  data-toggle="tab" class="nav-link text-muted">お気に入り</a></li>
                  </ul>
                 <div class="tab-content text-left" style="overflow-y:scroll; height:35rem;">
                     <div class="tab-pane active fade show" id="post">
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush" id="my-post-list">
 	                       {% for post in user_post_list %}
 	                           <li class="list-group-item">
 	                               <span class="font-weight-bold h6">{{ post.user.name }}</span>
 	                               <p>{{ post.content | linebreaksbr}}</p>
-	                               <button type="button" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
-	                                background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn">
-	                                   <i class="far fa-star favolite-off" id="favolite-off"></i>
-	                                   <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on"></i>
-	                               </button>
+	                               <form class="favolite-form" id="mypos-{{ post.post_id }}">
+	                                   <input type="hidden" name="post_id" value="{{ post.post_id }}">
+	                                   {% if post.prefetch_favorite %}
+	                                       <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
+                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
+                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_id }}"></i>
+                                           </button>
+	                                   {% else %}
+			                               <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
+			                                   background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
+			                                   <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_id }}"></i>
+			                                   <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_id }}"></i>
+			                               </button>
+		                               {% endif %}
+		                               {% csrf_token %}
+	                               </form>
+
 	                           </li>
 	                       {% endfor %}
                         </ul>
-                        <div id="end"></div>
+                        <div id="my-post-end"></div>
                         {% if user_post_list.has_next %}
-                            <input class="page" type="hidden" value="{{ user_post_list.next_page_number }}"/>
-                            <input class="has-next" type="hidden" value="{{ user_post_list.has_next }}"/>
+                            <input id="my-post-page" type="hidden" value="{{ user_post_list.next_page_number }}"/>
+                            <input id="my-post-has-next" type="hidden" value="{{ user_post_list.has_next }}"/>
                         {% endif %}
                     </div>
-                    <div class="tab-pane fade" id="favorite">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">お気に入り1</li>
+                    <div class="tab-pane fade" id=favorite>
+                        <ul class="list-group list-group-flush" id="my-fav-list">
+                            {% for post in user_favorite_list %}
+	                           <li class="list-group-item">
+	                               <span class="font-weight-bold h6">{{ post.user.name }}</span>
+	                               <p>{{ post.post_content.content | linebreaksbr}}</p>
+	                               <form class="favolite-form" id="myfav-{{ post.post_content.post_id }}">
+	                                   <input type="hidden" name="post_id" value="{{post.post_content.post_id }}">
+	                                       <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
+	                                                background:#f0f8ff;" onfocus="this.blur();" id="myfav-favolite-btn-{{ post.post_content.post_id }}">
+	                                           <i class="far fa-star favolite-off" style="display: none;" id="myfav-favolite-off-{{ post.post_content.post_id }}"></i>
+	                                           <i class="fas fa-star favolite-on" id="myfav-favolite-on-{{ post.post_content.post_id }}"></i>
+	                                       </button>
+	                                   {% csrf_token %}
+	                                </form>
+	                           </li>
+                            {% endfor %}
                         </ul>
+                    <div id="my-fav-end"></div>
+                        {% if user_favorite_list.has_next %}
+                            <input id="my-fav-page" type="hidden" value="{{ user_favorite_list.next_page_number }}"/>
+                            <input id="my-fav-has-next" type="hidden" value="{{ user_favorite_list.has_next }}"/>
+                        {% endif %}
                     </div>
                 </div>
             </div>

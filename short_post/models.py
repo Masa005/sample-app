@@ -51,6 +51,7 @@ class Favorite(models.Model):
                                      db_constraint=False)
     user = models.ForeignKey(User, on_delete=models.SET(make_and_set_user),
                              db_constraint=False)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     class Meta:
         db_table = 'favorite'

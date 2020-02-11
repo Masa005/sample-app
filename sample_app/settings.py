@@ -209,6 +209,10 @@ LOGGING = {
         'sample_app': {
             'handlers': ['console', 'file'],
             'level': 'INFO'
-        }
+        },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
     }
 }
