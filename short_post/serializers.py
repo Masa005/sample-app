@@ -28,6 +28,6 @@ class PostContentSerializer(serializers.ModelSerializer):
             'content',
             'date_joined',
             'user',
-            'prefetch_favorite'
+            'prefetch_favorite',
         ]
         depth = 1

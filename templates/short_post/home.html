@@ -77,8 +77,8 @@
 	                                   {% if post.prefetch_favorite %}
 	                                       <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
                                                background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
-                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_id }}"></i>
-                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_id }}"></i>
+                                               <i class="far fa-star favolite-off" style="display: none;" id="favolite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favolite-on"  id="favolite-on-{{ post.post_id }}"></i>
                                            </button>
 	                                   {% else %}
 			                               <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
@@ -103,10 +103,11 @@
                         <ul class="list-group list-group-flush" id="my-fav-list">
                             {% for post in user_favorite_list %}
 	                           <li class="list-group-item">
-	                               <span class="font-weight-bold h6">{{ post.user.name }}</span>
+	                               <span class="font-weight-bold h6">{{ post.post_content.user.name }}</span>
 	                               <p>{{ post.post_content.content | linebreaksbr}}</p>
 	                               <form class="favolite-form" id="myfav-{{ post.post_content.post_id }}">
 	                                   <input type="hidden" name="post_id" value="{{post.post_content.post_id }}">
+
 	                                       <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
 	                                                background:#f0f8ff;" onfocus="this.blur();" id="myfav-favolite-btn-{{ post.post_content.post_id }}">
 	                                           <i class="far fa-star favolite-off" style="display: none;" id="myfav-favolite-off-{{ post.post_content.post_id }}"></i>

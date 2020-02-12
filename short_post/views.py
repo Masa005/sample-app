@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 from short_post.serializers import PostContentSerializer
 from short_post.models import Favorite
 from django.db.models import Prefetch
-from short_post.serializers import FavoriteSerializer
 from django.core.exceptions import ValidationError
+from short_post.serializers import FavoriteSerializer
 
 User = get_user_model()
 
@@ -66,6 +66,32 @@ class TimeLineView(LoginRequiredMixin, generic.FormView):
     タイムライン画面用View
     """
     template_name = "short_post/timeline.html"
+    form_class = PostForm
+    success_url = reverse_lazy('short_post:timeline')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # すべてのユーザーの投稿内容一覧を取得
+        all_post_list = PostContent.objects.all()\
+            .order_by('date_joined').reverse().prefetch_related(
+                    Prefetch('favorite_set', queryset=Favorite.objects.filter(
+                        user__username=self.request.user.username),
+                             to_attr='prefetch_favorite'))
+        # 投稿内容一覧を10個ずつ表示
+        post_paginator = Paginator(all_post_list, 10)
+        # 1ページ目の投稿内容一覧を設定
+        all_post_list = post_paginator.page(1)
+        context['all_post_list'] = all_post_list
+        return context
+
+    def form_valid(self, form):
+        """
+        投稿処理
+        """
+        post = form.save(commit=False)
+        post.user = self.request.user
+        post.save()
+        return super().form_valid(form)
 
 
 def post_load_api(request):
@@ -73,31 +99,57 @@ def post_load_api(request):
     投稿一覧取得API
     """
     request_user_name = request.GET.get('user-name')
-    # ユーザーの投稿内容一覧を取得
-    user_post_list = PostContent.objects.filter(
-        user__username=request_user_name
-        ).select_related().all().order_by(
-            'date_joined').reverse().prefetch_related(
-                Prefetch('favorite_set', queryset=Favorite.objects.filter(
-                    user__username=request_user_name),
-                    to_attr='prefetch_favorite'))
-    # 投稿内容一覧を10個ずつ表示
-    paginator = Paginator(user_post_list, 10)
-    page = request.GET.get('page')
-    try:
-        # リクエストされたページの投稿内容一覧を設定
-        result_post = paginator.page(page)
-        serializer_post = PostContentSerializer(data=result_post.object_list,
-                                                many=True)
-        serializer_post.is_valid()
-        serializer_post.save()
-    # 空のリクエストや存在しないページのリクエスト時は何も返さない
-    except (PageNotAnInteger, EmptyPage):
-        return HttpResponse(status=204)
-    return JsonResponse(data={
-        'user_post_list': serializer_post.data,
-        'page': result_post.number,
-        'has_next': result_post.has_next()})
+
+    if request_user_name == 'all':
+        # すべてのユーザーの投稿内容一覧を取得
+        result_list = PostContent.objects.all()\
+            .order_by('date_joined').reverse().prefetch_related(
+                    Prefetch('favorite_set', queryset=Favorite.objects.filter(
+                        user__username=request.user.username),
+                             to_attr='prefetch_favorite'))
+
+        paginator = Paginator(result_list, 10)
+        page = request.GET.get('page')
+        try:
+            # リクエストされたページの投稿内容一覧を設定
+            result_post = paginator.page(page)
+            serializer_post = PostContentSerializer(
+                data=result_post.object_list, many=True)
+            serializer_post.is_valid()
+            serializer_post.save()
+        # 空のリクエストや存在しないページのリクエスト時は何も返さない
+        except (PageNotAnInteger, EmptyPage):
+            return HttpResponse(status=204)
+        return JsonResponse(data={
+                'user_post_list': serializer_post.data,
+                'page': result_post.number,
+                'has_next': result_post.has_next()})
+    else:
+        # ユーザーの投稿内容一覧を取得
+        user_post_list = PostContent.objects.filter(
+            user__username=request_user_name
+            ).select_related().all().order_by(
+                'date_joined').reverse().prefetch_related(
+                    Prefetch('favorite_set', queryset=Favorite.objects.filter(
+                        user__username=request_user_name),
+                        to_attr='prefetch_favorite'))
+        # 投稿内容一覧を10個ずつ表示
+        paginator = Paginator(user_post_list, 10)
+        page = request.GET.get('page')
+        try:
+            # リクエストされたページの投稿内容一覧を設定
+            result_post = paginator.page(page)
+            serializer_post = PostContentSerializer(
+                data=result_post.object_list, many=True)
+            serializer_post.is_valid()
+            serializer_post.save()
+        # 空のリクエストや存在しないページのリクエスト時は何も返さない
+        except (PageNotAnInteger, EmptyPage):
+            return HttpResponse(status=204)
+        return JsonResponse(data={
+            'user_post_list': serializer_post.data,
+            'page': result_post.number,
+            'has_next': result_post.has_next()})
 
 
 def fav_load_api(request):
