@@ -3,13 +3,11 @@ $(function(){
 	var myPostHasNext = $('#my-post-has-next').prop('value');
 	var myFavtNextPage = $('#my-fav-page').prop('value');
 	var myFavHasNext = $('#my-fav-has-next').prop('value');
+	var allPostNextPage = $('#all-post-page').prop('value');
+	var allPostHasNext = $('#all-post-has-next').prop('value');
+	var allUserName = 'all'
 	var userName = $('.card-subtitle').prop('id');
 	var prefixNum = 6;
-
-	//お気に入りボタン初期表示
-	$(document).ready( function(){
-		favInit();
-	});
 
 	//お気に入りボタン制御
 	$(document).on('submit','.favolite-form',function(event) {
@@ -31,6 +29,8 @@ $(function(){
             		alert('お気に入り登録しました');
         			$('#favolite-off-' + postId).hide();
         			$('#favolite-on-' + postId).show();
+        			$('#all-favolite-off-' + postId).hide();
+        			$('#all-favolite-on-' + postId).show();
             	}else{
             		alert('お気に入り登録に失敗しました');
             	}
@@ -53,6 +53,8 @@ $(function(){
 	        			$('#favolite-on-' + postId).hide();
 	        			$('#myfav-favolite-off-' + postId).show();
 	        			$('#myfav-favolite-on-' + postId).hide();
+	        			$('#all-favolite-off-' + postId).show();
+	        			$('#all-favolite-on-' + postId).hide();
 	            	}else{
 	            		alert('お気に入り削除に失敗しました');
 	            	}
@@ -165,19 +167,60 @@ $(function(){
 		        }
 		    }
 		}
+		//すべての場合
+		if($('#all-timeline').hasClass('active')){
+			var end = document.getElementById('all-post-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+		    if(allPostHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../post_load/?page=' + allPostNextPage + '&user-name=' + allUserName,
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.user_post_list.forEach(function(post){
+		        				var favFlg = 0;
+		        				var content = post.content.replace(/\r\n/g, '\n');
+		        				content = content.replace(/\r/g, '\n');
+		        				var contentLines = content.split('\n');
+		        				var replacedContent = contentLines.join('<br />');
+		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+		        				var nextPost = '<li class="list-group-item">';
+		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				nextPost += '<p>' + replacedContent + '</p>';
+		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
+		        				if(post.prefetch_favorite.length == 1){
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        				}else{
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        				}
+		        				if(post.prefetch_favorite.length == 1){
+		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}else{
+		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}
+		        				nextPost += ' </button>';
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
+		        				nextPost += '</form>';
+		        				nextPost += ' </li>';
+		        				$('#all-post-list').append(nextPost);
+		        			});
+		        			allPostNextPage++;
+		        			allPostHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
 	});
-
-	function favInit(){
-		$(".favolite-form").each(function(i, elem) {
-			var tenpPostId = $(this).attr('id');
-			var postId = tenpPostId.slice( prefixNum ) ;
-			if($('#favolite-btn-' + postId).hasClass('active')){
-				$('#favolite-off-' + postId).hide();
-				$('#favolite-on-' + postId).show();
-			} else {
-				$('#favolite-off-' + postId).show();
-				$('#favolite-on-' + postId).hide();
-			}
-		});
-	}
 });
