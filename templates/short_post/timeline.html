@@ -59,31 +59,34 @@
             </div>
             <div class="col-sm-8 pl-0 mt-2">
                 <ul class="nav nav-tabs" role="tablists">
-                    <li class="nav-item "><a href="#follower-timeline" data-toggle="tab" class="nav-link active text-muted">フォロー中</a></li>
+                    <li class="nav-item "><a href="#follow-timeline" data-toggle="tab" class="nav-link active text-muted">フォロー中</a></li>
                     <li class="nav-item"><a href="#all-timeline"  data-toggle="tab" class="nav-link text-muted">すべて</a></li>
                  </ul>
                 <div class="tab-content text-left" style="overflow-y:scroll; height:35rem;">
-                    <div class="tab-pane active fade show" id="follower-timeline">
-                    <!--
-                        <ul class="list-group list-group-flush" id="my-post-list">
+                    <div class="tab-pane active fade show" id="follow-timeline">
+                        <ul class="list-group list-group-flush" id="follower-post-list">
 
-                           {% for post in all_post_list %}
+                           {% for post in follow_post_list %}
                                <li class="list-group-item">
-                                   <span class="font-weight-bold h6">{{ post.post_content.user.name }}</span>
-                                   <p>{{ post.post_content.content | linebreaksbr}}</p>
-                                   <form class="favolite-form" id="mypos-{{ post.post_content.post_id }}">
-                                       <input type="hidden" name="post_id" value="{{ post.post_content.post_id }}">
+                                   {% if post.user.username == user.username%}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.user.name }}</a></span>
+                                   {% else %}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?user-name={{ post.user.username }}">{{ post.user.name }}</a></span>
+                                   {% endif %}
+                                   <p>{{ post.content | linebreaksbr}}</p>
+                                   <form class="favolite-form" id="flpos-{{ post.post_id }}">
+                                       <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                        {% if post.prefetch_favorite %}
                                            <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
-                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_content.post_id }}">
-                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_content.post_id }}"></i>
-                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_content.post_id }}"></i>
+                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
+                                               <i class="far fa-star favolite-off" style="display: none;" id="favolite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favolite-on"  id="favolite-on-{{ post.post_id }}"></i>
                                            </button>
                                        {% else %}
                                            <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
-                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_content.post_id }}">
-                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_content.post_id }}"></i>
-                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_content.post_id }}"></i>
+                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
+                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_id }}"></i>
                                            </button>
                                        {% endif %}
                                        {% csrf_token %}
@@ -92,18 +95,21 @@
                                </li>
                            {% endfor %}
                         </ul>
-                        <div id="my-post-end"></div>
-                        {% if user_post_list.has_next %}
-                            <input id="my-post-page" type="hidden" value="{{ user_post_list.next_page_number }}"/>
-                            <input id="my-post-has-next" type="hidden" value="{{ user_post_list.has_next }}"/>
+                        <div id="follower-post-end"></div>
+                        {% if follow_post_list.has_next %}
+                            <input id="follower-post-page" type="hidden" value="{{ follow_post_list.next_page_number }}"/>
+                            <input id="follower-post-has-next" type="hidden" value="{{ follow_post_list.has_next }}"/>
                         {% endif %}
-                         -->
                     </div>
                     <div class="tab-pane fade" id="all-timeline">
                         <ul class="list-group list-group-flush" id="all-post-list">
                            {% for post in all_post_list %}
                                <li class="list-group-item">
-                                   <span class="font-weight-bold h6">{{ post.user.name }}</span>
+                                   {% if post.user.username == user.username%}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.user.name }}</a></span>
+                                   {% else %}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?user-name={{ post.user.username }}">{{ post.user.name }}</a></span>
+                                   {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
                                    <form class="favolite-form" id="alpos-{{ post.post_id }}">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
@@ -115,7 +121,7 @@
 	                                           </button>
                                            {% else %}
 	                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
-	                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
+	                                               background:#f0f8ff;" onfocus="this.blur();" id="all-favolite-btn-{{ post.post_id }}">
 	                                               <i class="far fa-star favolite-off" id="all-favolite-off-{{ post.post_id }}"></i>
 	                                               <i class="fas fa-star favolite-on" style="display: none;" id="all-favolite-on-{{ post.post_id }}"></i>
 	                                           </button>

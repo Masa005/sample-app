@@ -3,10 +3,17 @@ $(function(){
 	var myPostHasNext = $('#my-post-has-next').prop('value');
 	var myFavtNextPage = $('#my-fav-page').prop('value');
 	var myFavHasNext = $('#my-fav-has-next').prop('value');
+	var followerPostNextPage = $('#follower-post-page').prop('value');
+	var followerPostHasNext = $('#follower-post-has-next').prop('value');
 	var allPostNextPage = $('#all-post-page').prop('value');
 	var allPostHasNext = $('#all-post-has-next').prop('value');
+	var otherPostNextPage = $('#other-post-page').prop('value');
+	var otherPostHasNext = $('#other-post-has-next').prop('value');
+	var otherFavtNextPage = $('#other-fav-page').prop('value');
+	var otherFavHasNext = $('#other-fav-has-next').prop('value');
 	var allUserName = 'all'
 	var userName = $('.card-subtitle').prop('id');
+	var myUserName = $('#my-username').prop('value');
 	var prefixNum = 6;
 
 	//お気に入りボタン制御
@@ -17,8 +24,11 @@ $(function(){
 		var postId = tenpPostId.slice( prefixNum ) ;
 		event.preventDefault();
 		$('#favolite-btn-' + postId).toggleClass('active');
+		$('#fav-favolite-btn-' + postId).toggleClass('active');
+		$('#all-favolite-btn-' + postId).toggleClass('active');
 		//お気に入り登録
-		if($('#favolite-btn-' + postId).hasClass('active')){
+		if($('#favolite-btn-' + postId).hasClass('active') || $('#fav-favolite-btn-' + postId).hasClass('active')
+				|| $('#all-favolite-btn-' + postId).hasClass('active')){
 			$.ajax({
 			'url': '../favorite_add/',
             'type': 'POST',
@@ -31,6 +41,8 @@ $(function(){
         			$('#favolite-on-' + postId).show();
         			$('#all-favolite-off-' + postId).hide();
         			$('#all-favolite-on-' + postId).show();
+        			$('#fav-favolite-off-' + postId).hide();
+        			$('#fav-favolite-on-' + postId).show();
             	}else{
             		alert('お気に入り登録に失敗しました');
             	}
@@ -55,6 +67,8 @@ $(function(){
 	        			$('#myfav-favolite-on-' + postId).hide();
 	        			$('#all-favolite-off-' + postId).show();
 	        			$('#all-favolite-on-' + postId).hide();
+	        			$('#fav-favolite-off-' + postId).show();
+	        			$('#fav-favolite-on-' + postId).hide();
 	            	}else{
 	            		alert('お気に入り削除に失敗しました');
 	            	}
@@ -145,15 +159,19 @@ $(function(){
 		        				var replacedContent = contentLines.join('<br />');
 		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 		        				var nextPost = '<li class="list-group-item">';
-		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				if(post.post_content.user.username == userName){
+			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.post_content.user.name + '</a></span>';
+		        				}else{
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
+		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_content.post_id + '>';
 			        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_content.post_id + '>';
-		        				nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_content.post_id + '></i>';
-		        				nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_content.post_id + '></i>';
+			        					id=' + 'fav-favolite-btn-' + post.post_content.post_id + '>';
+		        				nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
+		        				nextPost += '<i class="fas fa-star favolite-on" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
 		        				nextPost += '</form>';
@@ -162,6 +180,60 @@ $(function(){
 		        			});
 		        			myFavtNextPage++;
 		        			myFavHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
+		//フォロー中の投稿一覧の場合
+		if($('#follow-timeline').hasClass('active')){
+			var end = document.getElementById('follower-post-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+		    if(followerPostHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../post_load/?page=' + followerPostNextPage + '&user-name=' + userName + '&follow=true',
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.user_post_list.forEach(function(post){
+		        				var content = post.content.replace(/\r\n/g, '\n');
+		        				content = content.replace(/\r/g, '\n');
+		        				var contentLines = content.split('\n');
+		        				var replacedContent = contentLines.join('<br />');
+		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+		        				var nextPost = '<li class="list-group-item">';
+		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.user.username +'>' + post.user.name + '</a></span>';
+		        				nextPost += '<p>' + replacedContent + '</p>';
+		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
+		        				if(post.prefetch_favorite.length == 1){
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        				}else{
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        				}
+		        				if(post.prefetch_favorite.length == 1){
+		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}else{
+		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}
+		        				nextPost += ' </button>';
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
+		        				nextPost += '</form>';
+		        				nextPost += ' </li>';
+		        				$('#follower-post-list').append(nextPost);
+		        			});
+		        			followerPostNextPage++;
+		        			followerPostHasNext = response.has_next;
 		        		}
 		        	});
 		        }
@@ -189,25 +261,26 @@ $(function(){
 		        				var replacedContent = contentLines.join('<br />');
 		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 		        				var nextPost = '<li class="list-group-item">';
-		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				if(post.user.username == userName){
+			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.user.name + '</a></span>';
+		        				}else{
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.user.username +'>' + post.user.name + '</a></span>';
+		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
 		        				if(post.prefetch_favorite.length == 1){
 			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
+			        					id=' + 'all-favolite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'all-favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'all-favolite-on-' + post.post_id + '></i>';
 		        				}else{
 			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
-		        				}
-		        				if(post.prefetch_favorite.length == 1){
-		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
-		        				}else{
-		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+			        					id=' + 'all-favolite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'all-favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'all-favolite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
@@ -217,6 +290,122 @@ $(function(){
 		        			});
 		        			allPostNextPage++;
 		        			allPostHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
+		//その他ユーザー投稿一覧
+		if($('#other-post').hasClass('active')){
+			var end = document.getElementById('other-post-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+
+		    if(otherPostHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../post_load/?page=' + otherPostNextPage + '&user-name=' + userName + '&other=true',
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.user_post_list.forEach(function(post){
+		        				var content = post.content.replace(/\r\n/g, '\n');
+		        				content = content.replace(/\r/g, '\n');
+		        				var contentLines = content.split('\n');
+		        				var replacedContent = contentLines.join('<br />');
+		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+		        				var nextPost = '<li class="list-group-item">';
+		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				nextPost += '<p>' + replacedContent + '</p>';
+		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
+		        				if(Object.keys(post.prefetch_favorite).length){
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}else{
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        				}
+		        				nextPost += ' </button>';
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
+		        				nextPost += '</form>';
+		        				nextPost += ' </li>';
+		        				$('#other-post-list').append(nextPost);
+		        			});
+		        			otherPostNextPage++;
+		        			otherPostHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
+		//その他ユーザー画面のお気に入り一覧の場合
+		if($('#other-favorite').hasClass('active')){
+			var end = document.getElementById('other-fav-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+
+		    if(otherFavHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../fav_load/?page=' + otherFavtNextPage + '&user-name=' + userName + '&other=true',
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.user_favorite_list.forEach(function(post){
+		        				var favFlg = 0;
+		        				var content = post.post_content.content.replace(/\r\n/g, '\n');
+		        				content = content.replace(/\r/g, '\n');
+		        				var contentLines = content.split('\n');
+		        				var replacedContent = contentLines.join('<br />');
+
+		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+		        				var nextPost = '<li class="list-group-item">';
+		        				if(post.post_content.user.username == myUserName){
+			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.post_content.user.name + '</a></span>';
+		        				}else{
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
+		        				}
+		        				nextPost += '<p>' + replacedContent + '</p>';
+		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
+		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_content.post_id + '>';
+		        				response.login_user_favorite_list.forEach(function(loginFav){
+			        					if( loginFav.post_content != null && loginFav.post_content.post_id == post.post_content.post_id){
+			        						favFlg = 1;
+			        					}
+		        				});
+		        				if(favFlg == 1){
+				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+				        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+				        					id=' + 'fav-favolite-btn-' + post.post_content.post_id + '>';
+			        				nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
+			        				nextPost += '<i class="fas fa-star favolite-on" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
+			        				nextPost += ' </button>';
+		        				}else{
+				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
+			        					id=' + 'favolite-btn-' + post.post_content.post_id + '>';
+				        		    nextPost += '<i class="far fa-star favolite-off" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
+				        		    nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
+				        		    nextPost += ' </button>';
+		        				}
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
+		        				nextPost += '</form>';
+		        				nextPost += ' </li>';
+		        				$('#other-fav-list').append(nextPost);
+		        			});
+		        			otherFavtNextPage++;
+		        			otherFavHasNext = response.has_next;
 		        		}
 		        	});
 		        }
