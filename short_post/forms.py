@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from short_post.models import PostContent
 from django import forms
+from short_post.models import Follow
 
 
 class PostForm(ModelForm):
@@ -19,3 +20,12 @@ class PostForm(ModelForm):
             'placeholder': '投稿内容を入力'})
         self.fields['content'].error_messages = {'max_length': '投稿内容は172 文字'
                                                  '以下で入力してください'}
+
+
+class FollowForm(ModelForm):
+    """
+    フォローフォーム
+    """
+    class Meta:
+        model = Follow
+        fields = ('followed_user',)

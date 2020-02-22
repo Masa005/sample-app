@@ -57,3 +57,30 @@ class Favorite(models.Model):
         db_table = 'favorite'
         verbose_name = _('favorite')
         verbose_name_plural = _('favorites')
+
+
+class Follow(models.Model):
+    """
+    フォローモデル
+    フォロー情報を管理する
+    """
+    def make_and_set_user(self):
+        user = User.objects.get_or_create(name="deleted_user")
+        return user
+
+    follow_id = models.UUIDField(default=uuid.uuid4,
+                                 primary_key=True, editable=False)
+    follow_user = models.ForeignKey(User,
+                                    on_delete=models.SET(make_and_set_user),
+                                    db_constraint=False,
+                                    related_name="follow_user")
+    followed_user = models.ForeignKey(User,
+                                      on_delete=models.SET(make_and_set_user),
+                                      db_constraint=False,
+                                      related_name="followed_user")
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+
+    class Meta:
+        db_table = 'follow'
+        verbose_name = _('follow')
+        verbose_name_plural = _('followes')

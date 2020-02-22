@@ -15,7 +15,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             'user',
             'date_joined',
         ]
-        depth = 1
+        depth = 2
 
 
 class PostContentSerializer(serializers.ModelSerializer):

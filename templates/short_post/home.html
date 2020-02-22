@@ -103,15 +103,19 @@
                         <ul class="list-group list-group-flush" id="my-fav-list">
                             {% for post in user_favorite_list %}
 	                           <li class="list-group-item">
-	                               <span class="font-weight-bold h6">{{ post.post_content.user.name }}</span>
+                                   {% if post.post_content.user.username == user.username%}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.post_content.user.name }}</a></span>
+                                   {% else %}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?user-name={{ post.post_content.user.username }}">{{ post.post_content.user.name }}</a></span>
+                                   {% endif %}
 	                               <p>{{ post.post_content.content | linebreaksbr}}</p>
 	                               <form class="favolite-form" id="myfav-{{ post.post_content.post_id }}">
 	                                   <input type="hidden" name="post_id" value="{{post.post_content.post_id }}">
 
 	                                       <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
-	                                                background:#f0f8ff;" onfocus="this.blur();" id="myfav-favolite-btn-{{ post.post_content.post_id }}">
-	                                           <i class="far fa-star favolite-off" style="display: none;" id="myfav-favolite-off-{{ post.post_content.post_id }}"></i>
-	                                           <i class="fas fa-star favolite-on" id="myfav-favolite-on-{{ post.post_content.post_id }}"></i>
+	                                                background:#f0f8ff;" onfocus="this.blur();" id="fav-favolite-btn-{{ post.post_content.post_id }}">
+	                                           <i class="far fa-star favolite-off" style="display: none;" id="fav-favolite-off-{{ post.post_content.post_id }}"></i>
+	                                           <i class="fas fa-star favolite-on" id="fav-favolite-on-{{ post.post_content.post_id }}"></i>
 	                                       </button>
 	                                   {% csrf_token %}
 	                                </form>
