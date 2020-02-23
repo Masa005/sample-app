@@ -18,6 +18,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from short_post.forms import FollowForm
 from short_post.models import Follow
+from short_post.serializers import FollowSerializer
 
 User = get_user_model()
 
@@ -43,6 +44,15 @@ class HomeView(LoginRequiredMixin, generic.FormView):
         # ログインユーザーのお気に入り一覧を取得
         user_favorite_list = Favorite.objects.filter(
             user=self.request.user).order_by('date_joined').reverse()
+
+        # ログインユーザーのフォロー数を取得
+        follow_count = Follow.objects.filter(
+            follow_user__username=self.request.user.username).count()
+
+        # ログインユーザーのフォロワー数を取得
+        follower_count = Follow.objects.filter(
+            followed_user__username=self.request.user.username).count()
+
         # 投稿内容一覧を10個ずつ表示
         post_paginator = Paginator(user_post_list, 10)
         # お気に入り一覧を10個ずつ表示
@@ -53,6 +63,8 @@ class HomeView(LoginRequiredMixin, generic.FormView):
         user_favorite_list = favorite_paginator.page(1)
         context['user_post_list'] = user_post_list
         context['user_favorite_list'] = user_favorite_list
+        context['follow_count'] = follow_count
+        context['follower_count'] = follower_count
         return context
 
     def form_valid(self, form):
@@ -96,6 +108,14 @@ class TimeLineView(LoginRequiredMixin, generic.FormView):
                         user__username=self.request.user.username),
                              to_attr='prefetch_favorite'))
 
+        # ログインユーザーのフォロー数を取得
+        follow_count = Follow.objects.filter(
+            follow_user__username=self.request.user.username).count()
+
+        # ログインユーザーのフォロワー数を取得
+        follower_count = Follow.objects.filter(
+            followed_user__username=self.request.user.username).count()
+
         # 投稿内容一覧を10個ずつ表示
         post_paginator = Paginator(all_post_list, 10)
         follow_post_paginator = Paginator(follow_post_list, 10)
@@ -104,6 +124,8 @@ class TimeLineView(LoginRequiredMixin, generic.FormView):
         follow_post_list = follow_post_paginator.page(1)
         context['all_post_list'] = all_post_list
         context['follow_post_list'] = follow_post_list
+        context['follow_count'] = follow_count
+        context['follower_count'] = follower_count
         return context
 
     def form_valid(self, form):
@@ -126,10 +148,10 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
     success_url = ''
 
     def get(self, request):
-        if 'user-name' in self.request.GET:
+        if 'username' in self.request.GET:
             try:
                 OtherUserView.request_user_name = self.request.GET.get(
-                    'user-name')
+                    'username')
                 User.objects.get(username=OtherUserView.request_user_name)
             except User.DoesNotExist:
                 messages.add_message(self.request, messages.ERROR,
@@ -166,6 +188,14 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
                                  user__username=self.request.user.username),
                              to_attr='prefetch_favorite'))
 
+        # ユーザーのフォロー数を取得
+        follow_count = Follow.objects.filter(
+            follow_user__username=OtherUserView.request_user_name).count()
+
+        # ユーザーのフォロワー数を取得
+        follower_count = Follow.objects.filter(
+            followed_user__username=OtherUserView.request_user_name).count()
+
         # 投稿内容一覧を10個ずつ表示
         post_paginator = Paginator(user_post_list, 10)
         # お気に入り一覧を10個ずつ表示
@@ -178,6 +208,8 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
         context['user_favorite_list'] = user_favorite_list
         context['other_user'] = request_user
         context['follow_flg'] = follow_flg
+        context['follow_count'] = follow_count
+        context['follower_count'] = follower_count
         return context
 
     # form初期値設定
@@ -198,7 +230,7 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
         フォロー処理
         """
         follow_form = form.save(commit=False)
-        OtherUserView.success_url = '?user-name=' + OtherUserView\
+        OtherUserView.success_url = '?username=' + OtherUserView\
             .request_user_name
 
         # すでにフォローしたユーザーかチェック
@@ -219,15 +251,83 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
             return super().form_valid(form)
 
 
+class FollowFollowerView(LoginRequiredMixin, generic.TemplateView):
+    """
+    フォロー中・フォロワー一覧画面用View
+    """
+    template_name = "short_post/follow_follower.html"
+
+    def get(self, request):
+        if 'username' in self.request.GET:
+            request_username = self.request.GET.get('username')
+            try:
+                User.objects.get(
+                    username=request_username)
+            except User.DoesNotExist:
+                messages.add_message(self.request, messages.ERROR,
+                                     'そのユーザーは存在しません')
+                return redirect('sample_app:error')
+            return super(FollowFollowerView, self).get(request)
+        else:
+            messages.add_message(self.request, messages.ERROR,
+                                 '不正なアクセスです')
+            return redirect('sample_app:error')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_username = self.request.GET.get('username')
+        request_user = User.objects.get(
+                    username=request_username)
+
+        follower_flg = False
+        if 'follower' in self.request.GET and self.request.GET.get('follower'):
+            follower_flg = True
+        # ユーザーのフォロー一覧を取得
+        follow_list = Follow.objects.filter(
+            follow_user__username=request_username).order_by(
+                'date_joined').reverse()
+
+        # ユーザーのフォロワー一覧を取得
+        follower_list = Follow.objects.filter(
+            followed_user__username=request_username).order_by(
+                'date_joined').reverse()
+
+        # ユーザーのフォロー数を取得
+        follow_count = Follow.objects.filter(
+            follow_user__username=request_username).count()
+
+        # ユーザーのフォロワー数を取得
+        follower_count = Follow.objects.filter(
+            followed_user__username=request_username).count()
+
+        # フォロー一覧を10個ずつ表示
+        follow_paginator = Paginator(follow_list, 10)
+        # フォロワー一覧を10個ずつ表示
+        follower_paginator = Paginator(follower_list, 10)
+
+        # 1ページ目のフォロー一覧を設定
+        follow_list = follow_paginator.page(1)
+        # 1ページ目のフォロワー一覧を設定
+        follower_list = follower_paginator.page(1)
+
+        context['follow_list'] = follow_list
+        context['follower_list'] = follower_list
+        context['follower_flg'] = follower_flg
+        context['follow_count'] = follow_count
+        context['follower_count'] = follower_count
+        context['request_user'] = request_user
+        return context
+
+
 def post_load_api(request):
     """
     投稿一覧取得API
     """
-    request_user_name = request.GET.get('user-name')
+    request_user_name = request.GET.get('username')
     if 'other' in request.GET and request.GET.get('other'):
         # その他ユーザーの投稿内容を取得
         user_post_list = PostContent.objects.filter(
-            user__username=OtherUserView.request_user_name
+            user__username=request_user_name
         ).select_related().all().order_by(
             'date_joined').reverse().prefetch_related(
                 Prefetch('favorite_set', queryset=Favorite.objects.filter(
@@ -289,7 +389,7 @@ def fav_load_api(request):
     """
     お気に入り一覧取得API
     """
-    request_user_name = request.GET.get('user-name')
+    request_user_name = request.GET.get('username')
     if 'other' in request.GET and request.GET.get('other'):
         # その他ユーザーのお気に入り一覧を取得
         user_favorite_list = Favorite.objects.filter(
@@ -359,6 +459,42 @@ def fav_load_api(request):
         'user_favorite_list': serializer_fav.data,
         'page': result_fav.number,
         'has_next': result_fav.has_next()})
+
+
+def follow_follower_load_api(request):
+    """
+    フォロー中・フォロワー一覧取得API
+    """
+    request_username = request.GET.get('username')
+    if 'follower' in request.GET and request.GET.get('follower'):
+        # ユーザーのフォロワー一覧を取得
+        follow_follower_list = Follow.objects.filter(
+            followed_user__username=request_username).order_by(
+                'date_joined').reverse()
+
+    else:
+        # ユーザーのフォロー一覧を取得
+        follow_follower_list = Follow.objects.filter(
+            follow_user__username=request_username).order_by(
+                'date_joined').reverse()
+
+    # 投稿内容一覧を10個ずつ表示
+    paginator = Paginator(follow_follower_list, 10)
+    page = request.GET.get('page')
+    try:
+        # リクエストされたページの投稿内容一覧を設定
+        result_post = paginator.page(page)
+        serializer_follow_follower = FollowSerializer(
+            data=result_post.object_list, many=True)
+        serializer_follow_follower.is_valid()
+        serializer_follow_follower.save()
+    # 空のリクエストや存在しないページのリクエスト時は何も返さない
+    except (PageNotAnInteger, EmptyPage):
+        return HttpResponse(status=204)
+    return JsonResponse(data={
+        'follow_follower_list': serializer_follow_follower.data,
+        'page': result_post.number,
+        'has_next': result_post.has_next()})
 
 
 def favorite_add_api(request):
