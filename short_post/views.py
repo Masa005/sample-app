@@ -19,6 +19,7 @@ from django.shortcuts import redirect
 from short_post.forms import FollowForm
 from short_post.models import Follow
 from short_post.serializers import FollowSerializer
+from django.db import transaction
 
 User = get_user_model()
 
@@ -532,4 +533,22 @@ def favorite_delete_api(request):
                                 post_content=reqest_post_content).delete()
     except ValidationError:
             return JsonResponse(data={'status': '204'})
+    return JsonResponse(data={'status': '200'})
+
+
+@transaction.atomic
+def post_delete_api(request):
+    """
+    投稿削除API
+    """
+    request_post_id = request.POST.get('post_id')
+    try:
+        reqest_post_content = PostContent(post_id=request_post_id)
+        # 投稿の削除を実行
+        PostContent.objects.filter(post_id=request_post_id).delete()
+        # お気に入り削除を実行
+        Favorite.objects.filter(post_content=reqest_post_content).delete()
+    except ValidationError:
+        return JsonResponse(data={'status': '204'})
+        raise ValidationError
     return JsonResponse(data={'status': '200'})

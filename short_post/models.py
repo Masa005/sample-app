@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+
 class PostContent(models.Model):
     """
     投稿内容モデル
@@ -18,7 +19,7 @@ class PostContent(models.Model):
 
     post_id = models.UUIDField(default=uuid.uuid4,
                                primary_key=True, editable=False)
-    user = models.ForeignKey(User, on_delete=models.SET(make_and_set_user),
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                              db_constraint=False)
     content = models.CharField(_('投稿内容'), max_length=172)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
@@ -34,22 +35,12 @@ class Favorite(models.Model):
     お気に入りモデル
     ユーザ－がお気に入り登録した投稿を管理する
     """
-    def make_and_set_post_content(self):
-        post_content = PostContent.objects.get_or_create(name="deleted"
-                                                         "_post_content")
-        return post_content
-
-    def make_and_set_user(self):
-        user = User.objects.get_or_create(name="deleted_user")
-        return user
-
     favorite_id = models.UUIDField(default=uuid.uuid4,
                                    primary_key=True, editable=False)
     post_content = models.ForeignKey(PostContent,
-                                     on_delete=models.SET
-                                     (make_and_set_post_content),
+                                     on_delete=models.DO_NOTHING,
                                      db_constraint=False)
-    user = models.ForeignKey(User, on_delete=models.SET(make_and_set_user),
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                              db_constraint=False)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
@@ -70,12 +61,10 @@ class Follow(models.Model):
 
     follow_id = models.UUIDField(default=uuid.uuid4,
                                  primary_key=True, editable=False)
-    follow_user = models.ForeignKey(User,
-                                    on_delete=models.SET(make_and_set_user),
+    follow_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                                     db_constraint=False,
                                     related_name="follow_user")
-    followed_user = models.ForeignKey(User,
-                                      on_delete=models.SET(make_and_set_user),
+    followed_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                                       db_constraint=False,
                                       related_name="followed_user")
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)

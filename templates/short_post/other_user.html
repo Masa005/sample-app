@@ -65,7 +65,7 @@
                                <li class="list-group-item">
                                    <span class="font-weight-bold h6">{{ post.user.name }}</span>
                                    <p>{{ post.content | linebreaksbr}}</p>
-                                   <form class="favolite-form" id="mypos-{{ post.post_id }}">
+                                   <form class="favolite-form">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                        {% if post.prefetch_favorite %}
                                            <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
@@ -102,7 +102,7 @@
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.post_content.user.username }}">{{ post.post_content.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.post_content.content | linebreaksbr}}</p>
-                                   <form class="favolite-form" id="myfav-{{ post.post_content.post_id }}">
+                                   <form class="favolite-form">
                                        <input type="hidden" name="post_id" value="{{post.post_content.post_id }}">
                                        {% if post.post_content.prefetch_favorite %}
                                            <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;

@@ -16,7 +16,7 @@ class PostContentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PostContent
     post_id = factory.LazyFunction(uuid.uuid4)
-    content = factory.Faker('realText', length=172)
+    content = factory.Sequence(lambda n: '投稿内容%d' % n)
     date_joined = datetime.datetime.now()
     user = factory.SubFactory(UserFactory)
 

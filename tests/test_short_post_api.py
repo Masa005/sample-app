@@ -579,3 +579,70 @@ class FollowFollowerLoadApiTest(TestCase):
         self.login()
         res = self.client.get(url)
         self.assertEqual(res.status_code, 204)
+
+
+class PostDeleteApiTest(TestCase):
+    """
+    post_delete_apiのテストクラス
+    """
+    def setUp(self):
+        UserFactory(username='testUser')
+        UserFactory(username='testUser2')
+        test_user = User.objects.get(username='testUser')
+        test_user2 = User.objects.get(username='testUser2')
+        PostContentFactory(post_id='9758ebaa3fa34110aa3dbde31eaf40c8',
+                           content='テストコンテンツ', user=test_user)
+        test_post_content = PostContent.objects.get(
+            post_id='9758ebaa3fa34110aa3dbde31eaf40c8')
+        FavoriteFactory(post_content=test_post_content,
+                        user=test_user2)
+
+    def login(self):
+        """
+        共通ログイン処理
+        """
+        self.client.login(username='testUser', password='sampleapp')
+
+    def test_post_delete_succes(self):
+        """
+        投稿削除APIテスト
+        削除成功時
+        """
+        url = reverse('short_post:post_delete')
+        self.login()
+        test_post_id = '9758ebaa3fa34110aa3dbde31eaf40c8'
+        params = dict(post_id=test_post_id,)
+        res = self.client.post(url, params)
+        res_content = json.loads(res.content)
+        status = res_content['status']
+        # APIの応答ステータスを確認
+        self.assertEqual(status, '200')
+        # 投稿が削除されていることを確認
+        self.assertEqual(PostContent.objects.filter(
+            post_id='9758ebaa3fa34110aa3dbde31eaf40c8'
+            ).count(), 0)
+        self.assertEqual(Favorite.objects.filter(
+            post_content__post_id='9758ebaa3fa34110aa3dbde31eaf40c8'
+            ).count(), 0)
+
+    def test_post_delete_value_error(self):
+        """
+        投稿削除APIテスト
+        不正なリクエスト時
+        """
+        url = reverse('short_post:post_delete')
+        self.login()
+        test_post_id = '不正なリクエスト'
+        params = dict(post_id=test_post_id,)
+        res = self.client.post(url, params)
+        res_content = json.loads(res.content)
+        status = res_content['status']
+        # APIの応答ステータスを確認
+        self.assertEqual(status, '204')
+        # 投稿が削除されていないことを確認
+        self.assertEqual(PostContent.objects.filter(
+            post_id='9758ebaa3fa34110aa3dbde31eaf40c8'
+            ).count(), 1)
+        self.assertEqual(Favorite.objects.filter(
+            post_content__post_id='9758ebaa3fa34110aa3dbde31eaf40c8'
+            ).count(), 1)
