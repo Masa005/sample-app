@@ -18,18 +18,15 @@ $(function(){
 	var allUserName = 'all'
 	var userName = $('.card-subtitle').prop('id');
 	var myUserName = $('#my-username').prop('value');
-	var prefixNum = 6;
 
 	//お気に入りボタン制御
 	$(document).on('submit','.favolite-form',function(event) {
-
-		var tenpPostId = $(this).attr('id');
-		var postId = tenpPostId.slice( prefixNum ) ;
-
+		var postId = $(this).children("input").val();
 		event.preventDefault();
 		$('#favolite-btn-' + postId).toggleClass('active');
 		$('#fav-favolite-btn-' + postId).toggleClass('active');
 		$('#all-favolite-btn-' + postId).toggleClass('active');
+
 		//お気に入り登録
 		if($('#favolite-btn-' + postId).hasClass('active') || $('#fav-favolite-btn-' + postId).hasClass('active')
 				|| $('#all-favolite-btn-' + postId).hasClass('active')){
@@ -84,6 +81,33 @@ $(function(){
 		}
 	});
 
+	//投稿削除
+	$(document).on('submit','.delete-form',function(event) {
+		var postId = $(this).children("input").val();
+		event.preventDefault();
+		var result = confirm('投稿を削除しますか？');
+		if(result){
+			$.ajax({
+				'url': '../post_delete/',
+		        'type': 'POST',
+		        'data':$(this).serialize(),
+		        'dataType': 'json',
+		        'success':function(response){
+		        	if(response.status == '200'){
+		        		alert('投稿を削除しました');
+		        		window.location.reload();
+		        	}else{
+		        		alert('投稿の削除に失敗しました');
+		        	}
+		        },
+		        'error':function(){
+	    		alert('投稿の削除に失敗しました');
+		        },
+			});
+		}
+
+	});
+
 	//無限スクロール
 	$('.tab-content').on('scroll',function() {
 		//投稿一覧の場合
@@ -129,7 +153,12 @@ $(function(){
 		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
-		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>';
+		        				nextPost += '</form>';
+		        				nextPost += '<form class="delete-form">';
+		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
+		        				nextPost += '<button type="submit" class="btn btn-outline-danger btn-sm" >投稿を削除</button>';
+		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>';
 		        				nextPost += '</form>';
 		        				nextPost += ' </li>';
 		        				$('#my-post-list').append(nextPost);
@@ -289,6 +318,13 @@ $(function(){
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
 		        				nextPost += '</form>';
+		        				if(post.user.username == userName){
+			        				nextPost += '<form class="delete-form">';
+			        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
+			        				nextPost += '<button type="submit" class="btn btn-outline-danger btn-sm" >投稿を削除</button>';
+			        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>';
+			        				nextPost += '</form>';
+		        				}
 		        				nextPost += ' </li>';
 		        				$('#all-post-list').append(nextPost);
 		        			});

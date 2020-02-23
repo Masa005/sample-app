@@ -16,4 +16,5 @@ urlpatterns = [
          name="follow_follower"),
     path('follow_follower_load/', views.follow_follower_load_api,
          name="follow_follower_load"),
+    path('post_delete/', views.post_delete_api, name="post_delete"),
 ]

@@ -74,7 +74,7 @@
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
-                                   <form class="favolite-form" id="flpos-{{ post.post_id }}">
+                                   <form class="favolite-form">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                        {% if post.prefetch_favorite %}
                                            <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
@@ -111,7 +111,7 @@
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
-                                   <form class="favolite-form" id="alpos-{{ post.post_id }}">
+                                   <form class="favolite-form">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                            {% if post.prefetch_favorite %}
 	                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
@@ -128,6 +128,15 @@
                                            {% endif %}
                                        {% csrf_token %}
                                    </form>
+                                   {% if post.user.username == user.username%}
+	                                   <form class="delete-form">
+	                                       <input type="hidden" name="post_id" value="{{ post.post_id }}">
+	                                           <button type="submit" class="btn btn-outline-danger btn-sm" >
+	                                               投稿を削除
+	                                           </button>
+	                                       {% csrf_token %}
+	                                   </form>
+                                   {% endif %}
                                </li>
                            {% endfor %}
                         </ul>
