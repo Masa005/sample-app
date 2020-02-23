@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block js %}
+<script type="text/javascript" src="{% static 'js/post.js' %}"></script>
+{% endblock %}
+{% block title %}フォロー中・フォロワー一覧{% endblock %}
+
+{% block nav_item1_url %}"{% url 'short_post:home'%}"{% endblock %}
+{% block nav_item1_name %}ホーム{% endblock %}
+{% block nav_item2_url %}"{% url 'short_post:timeline'%}"{% endblock %}
+{% block nav_item2_name %}タイムライン{% endblock %}
+{% block nav_item3_url %}"{% url 'account:option'%}"{% endblock %}
+{% block nav_item3_name %}設定{% endblock %}
+{% block nav_item4_url %}"{% url 'account:logout'%}"{% endblock %}
+{% block nav_item4_name %}ログアウト{% endblock %}
+
+{% block body_class %}base-body text-center{% endblock %}
+{% block body %}
+    <div class="container mt-3 border">
+        <div class="row p-2">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body p-3 text-left">
+                        <div class="card-title mb-0">
+                            <span class="font-weight-bold h4">{{ request_user.name }}</span>
+                        </div>
+                        <div class="card-subtitle text-muted mb-2" id="{{ request_user.username }}">
+                            {{ request_user.username }}
+                        </div>
+                        <p class="card-text">ひとこと</p>
+                    </div>
+                    <div class="row no-gutters text-left">
+                    <div class="card-text col-sm-6 border-right border-top p-3">
+                        <span class="text-muted">フォロー中：<a href="{% url 'short_post:follow_follower'%}?username={{ request_user.username }}">{{ follow_count }}</a></span>
+                    </div>
+                    <div class="card-text col-sm-6 border-top p-3">
+                       <span class="text-muted">フォロワー：<a href="{% url 'short_post:follow_follower'%}?username={{ request_user.username }}&follower=True">{{ follower_count }}</a></span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8 pl-0 mt-2">
+
+                <ul class="nav nav-tabs" role="tablists">
+                    {% if follower_flg %}
+                        <li class="nav-item "><a href="#follow" data-toggle="tab" class="nav-link  text-muted">フォロー中</a></li>
+                        <li class="nav-item"><a href="#follower"  data-toggle="tab" class="nav-link active text-muted">フォロワー</a></li>
+                    {% else %}
+	                    <li class="nav-item "><a href="#follow" data-toggle="tab" class="nav-link active text-muted">フォロー中</a></li>
+	                    <li class="nav-item"><a href="#follower"  data-toggle="tab" class="nav-link text-muted">フォロワー</a></li>
+	                {% endif %}
+                 </ul>
+                <div class="tab-content text-left" style="overflow-y:scroll; height:35rem;">
+	                {% if follower_flg %}
+	                    <div class="tab-pane  fade show" id="follow">
+	                {% else %}
+	                    <div class="tab-pane active fade show" id="follow">
+	                {% endif %}
+                        <ul class="list-group list-group-flush" id="follow-list">
+                           {% for follow in follow_list %}
+                               <li class="list-group-item">
+                                   {% if follow.followed_user.username == user.username%}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ follow.followed_user.name }}</a></span>
+                                   {% else %}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ follow.followed_user.username }}">{{ follow.followed_user.name }}</a></span>
+                                   {% endif %}
+                                   <div class="text-muted mb-2">{{ follow.followed_user.username }}</div>
+                               </li>
+                           {% endfor %}
+                        </ul>
+                        <div id="follow-end"></div>
+                        {% if follow_list.has_next %}
+                            <input id="follow-page" type="hidden" value="{{ follow_list.next_page_number }}"/>
+                            <input id="follow-has-next" type="hidden" value="{{ follow_list.has_next }}"/>
+                        {% endif %}
+                    </div>
+                    {% if follower_flg %}
+                        <div class="tab-pane  active fade show" id=follower>
+                    {% else %}
+                        <div class="tab-pane  fade show" id=follower>
+                    {% endif %}
+                        <ul class="list-group list-group-flush" id="follower-list">
+                            {% for follower in follower_list %}
+                               <li class="list-group-item">
+                                   {% if follower.follow_user.username == user.username%}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ follower.follow_user.name }}</a></span>
+                                   {% else %}
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ follower.follow_user.username }}">{{ follower.follow_user.name }}</a></span>
+                                   {% endif %}
+                                   <div class="text-muted mb-2">{{ follower.follow_user.username }}</div>
+                               </li>
+                            {% endfor %}
+                        </ul>
+                    <div id="follower-end"></div>
+                        {% if follower_list.has_next %}
+                            <input id="follower-page" type="hidden" value="{{ follower_list.next_page_number }}"/>
+                            <input id="follower-has-next" type="hidden" value="{{ follower_list.has_next }}"/>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,20 +1,29 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
 
 User = get_user_model()
+
+
+class AdminUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email', 'birthday', 'email',
+                  'name')
+
 
 # Register your models here.
 @admin.register(User)
 class AdminUserAdmin(UserAdmin):
+    add_form = AdminUserCreationForm
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('name', 'email','birthday')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (None, {'fields': ('username', 'password', 'birthday', 'email',
+                           'name')}),
     )
-    list_display = ('username', 'email', 'name', 'birthday','is_staff')
-    search_fields = ('username', 'name', 'email','birthday')
+    add_fieldsets = ((None, {'classes': ('wide',), 'fields': (
+        'username', 'birthday', 'email', 'name', 'password1',
+        'password2'), }),)
+    list_display = ('username', 'email', 'name', 'birthday', 'is_staff')
+    search_fields = ('username', 'name', 'email', 'birthday')
     filter_horizontal = ('groups', 'user_permissions')

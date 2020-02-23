@@ -12,4 +12,8 @@ urlpatterns = [
          name="favorite_delete"),
     path('fav_load/', views.fav_load_api, name="fav_load"),
     path('other_user/', views.OtherUserView.as_view(), name="other_user"),
+    path('follow_follower/', views.FollowFollowerView.as_view(),
+         name="follow_follower"),
+    path('follow_follower_load/', views.follow_follower_load_api,
+         name="follow_follower_load"),
 ]

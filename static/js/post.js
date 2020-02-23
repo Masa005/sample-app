@@ -11,6 +11,10 @@ $(function(){
 	var otherPostHasNext = $('#other-post-has-next').prop('value');
 	var otherFavtNextPage = $('#other-fav-page').prop('value');
 	var otherFavHasNext = $('#other-fav-has-next').prop('value');
+	var followNextPage = $('#follow-page').prop('value');
+	var followHasNext = $('#follow-has-next').prop('value');
+	var followerNextPage = $('#follower-page').prop('value');
+	var followerHasNext = $('#follower-has-next').prop('value');
 	var allUserName = 'all'
 	var userName = $('.card-subtitle').prop('id');
 	var myUserName = $('#my-username').prop('value');
@@ -20,8 +24,8 @@ $(function(){
 	$(document).on('submit','.favolite-form',function(event) {
 
 		var tenpPostId = $(this).attr('id');
-
 		var postId = tenpPostId.slice( prefixNum ) ;
+
 		event.preventDefault();
 		$('#favolite-btn-' + postId).toggleClass('active');
 		$('#fav-favolite-btn-' + postId).toggleClass('active');
@@ -94,7 +98,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../post_load/?page=' + myPostNextPage + '&user-name=' + userName,
+		        		url: '../post_load/?page=' + myPostNextPage + '&username=' + userName,
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_post_list.forEach(function(post){
@@ -149,7 +153,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../fav_load/?page=' + myFavtNextPage + '&user-name=' + userName,
+		        		url: '../fav_load/?page=' + myFavtNextPage + '&username=' + userName,
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_favorite_list.forEach(function(post){
@@ -162,7 +166,7 @@ $(function(){
 		        				if(post.post_content.user.username == userName){
 			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.post_content.user.name + '</a></span>';
 		        				}else{
-		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
@@ -196,7 +200,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../post_load/?page=' + followerPostNextPage + '&user-name=' + userName + '&follow=true',
+		        		url: '../post_load/?page=' + followerPostNextPage + '&username=' + userName + '&follow=true',
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_post_list.forEach(function(post){
@@ -206,7 +210,7 @@ $(function(){
 		        				var replacedContent = contentLines.join('<br />');
 		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 		        				var nextPost = '<li class="list-group-item">';
-		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.user.username +'>' + post.user.name + '</a></span>';
+		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
@@ -250,7 +254,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../post_load/?page=' + allPostNextPage + '&user-name=' + allUserName,
+		        		url: '../post_load/?page=' + allPostNextPage + '&username=' + allUserName,
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_post_list.forEach(function(post){
@@ -264,7 +268,7 @@ $(function(){
 		        				if(post.user.username == userName){
 			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.user.name + '</a></span>';
 		        				}else{
-		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.user.username +'>' + post.user.name + '</a></span>';
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
@@ -307,7 +311,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../post_load/?page=' + otherPostNextPage + '&user-name=' + userName + '&other=true',
+		        		url: '../post_load/?page=' + otherPostNextPage + '&username=' + userName + '&other=true',
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_post_list.forEach(function(post){
@@ -359,7 +363,7 @@ $(function(){
 		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
 				if (top <= bottom) {
 		        	$.ajax({
-		        		url: '../fav_load/?page=' + otherFavtNextPage + '&user-name=' + userName + '&other=true',
+		        		url: '../fav_load/?page=' + otherFavtNextPage + '&username=' + userName + '&other=true',
 		        		dataType: 'json',
 		        		success: function(response){
 		        			response.user_favorite_list.forEach(function(post){
@@ -374,7 +378,7 @@ $(function(){
 		        				if(post.post_content.user.username == myUserName){
 			        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.post_content.user.name + '</a></span>';
 		        				}else{
-		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?user-name=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
+		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
@@ -406,6 +410,72 @@ $(function(){
 		        			});
 		        			otherFavtNextPage++;
 		        			otherFavHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
+		//フォロー中一覧
+		if($('#follow').hasClass('active')){
+			var end = document.getElementById('follow-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+
+		    if(followHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../follow_follower_load/?page=' + followNextPage + '&username=' + userName,
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.follow_follower_list.forEach(function(follow){
+		        				var nextFollow = '<li class="list-group-item">';
+		        				if(follow.followed_user.username == userName){
+		        					nextFollow += '<span class="font-weight-bold h6"><a href="../home">' +follow.followed_user.name + '</a></span>';
+		        				}else{
+		        					nextFollow += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + follow.followed_user.username +'>' + follow.followed_user.name + '</a></span>';
+		        				}
+		        				nextFollow += '<div class="text-muted mb-2">' + follow.followed_user.username + '</div>';
+		        				nextFollow += ' </li>';
+		        				$('#follow-list').append(nextFollow);
+		        			});
+		        			followNextPage++;
+		        			followHasNext = response.has_next;
+		        		}
+		        	});
+		        }
+		    }
+		}
+		//フォロワー一覧
+		if($('#follower').hasClass('active')){
+			var end = document.getElementById('follower-end');
+			// 表示領域の下端の位置
+		    var bottom = this.scrollTop + this.clientHeight;
+		    // 末尾の要素の上端の位置
+		    var top = end.offsetTop -this.offsetTop;
+
+		    if(followerHasNext){
+		    //表示している投稿一覧の最下層までスクロールしたら次の投稿一覧をリクエスト
+				if (top <= bottom) {
+		        	$.ajax({
+		        		url: '../follow_follower_load/?page=' + followerNextPage + '&username=' + userName + '&follower=True',
+		        		dataType: 'json',
+		        		success: function(response){
+		        			response.follow_follower_list.forEach(function(follower){
+		        				var nextFollow = '<li class="list-group-item">';
+		        				if(follower.follow_user.username == userName){
+		        					nextFollow += '<span class="font-weight-bold h6"><a href="../home">' +follower.follow_user.name + '</a></span>';
+		        				}else{
+		        					nextFollow += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + follower.follow_user.username +'>' + follower.follow_user.name + '</a></span>';
+		        				}
+		        				nextFollow += '<div class="text-muted mb-2">' + follower.follow_user.username + '</div>';
+		        				nextFollow += ' </li>';
+		        				$('#follower-list').append(nextFollow);
+		        			});
+		        			followerNextPage++;
+		        			followerHasNext = response.has_next;
 		        		}
 		        	});
 		        }

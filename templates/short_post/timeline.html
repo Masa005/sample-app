@@ -30,10 +30,10 @@
                     </div>
                     <div class="row no-gutters text-left">
                     <div class="card-text col-sm-6 border-right border-top p-3">
-                        <span class="text-muted">フォロー中</span>
+                        <span class="text-muted">フォロー中：<a href="{% url 'short_post:follow_follower'%}?username={{ user.username }}">{{ follow_count }}</a></span>
                     </div>
                     <div class="card-text col-sm-6 border-top p-3">
-                       <span class="text-muted">フォロワー</span>
+                       <span class="text-muted">フォロワー：<a href="{% url 'short_post:follow_follower'%}?username={{ user.username }}&follower=True">{{ follower_count }}</a></span>
                     </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                                    {% if post.user.username == user.username%}
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.user.name }}</a></span>
                                    {% else %}
-                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?user-name={{ post.user.username }}">{{ post.user.name }}</a></span>
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
                                    <form class="favolite-form" id="flpos-{{ post.post_id }}">
@@ -108,7 +108,7 @@
                                    {% if post.user.username == user.username%}
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.user.name }}</a></span>
                                    {% else %}
-                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?user-name={{ post.user.username }}">{{ post.user.name }}</a></span>
+                                       <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
                                    <form class="favolite-form" id="alpos-{{ post.post_id }}">
