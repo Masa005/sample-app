@@ -134,9 +134,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# メールをコンソールに表示する
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # アクティベーションURLの期限:1日以内
 ACTIVATION_TIMEOUT_SECONDS = 60*60*24
 
