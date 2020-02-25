@@ -25,3 +25,15 @@ div.signup-main label{
 .scroll {
   overflow-y: auto;
 }
+
+div.option-list a{
+	color: black;
+}
+
+.option-content{
+    width:40rem;
+}
+
+div.option-content label{
+    font-size:0.8rem;
+}

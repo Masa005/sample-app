@@ -18,6 +18,9 @@
 {% block body_class %}base-body text-center{% endblock %}
 {% block body %}
     <div class="container mt-3 border">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endfor %}
         <div class="row p-2">
             <div class="col-sm-4">
                 <div class="card">
@@ -28,7 +31,7 @@
                         <div class="card-subtitle text-muted mb-2" id="{{ user.username }}">
                             {{ user.username }}
                         </div>
-                        <p class="card-text">ひとこと</p>
+                        <p class="card-text">{{ user.one_word }}</p>
                     </div>
                     <div class="row no-gutters text-left">
                     <div class="card-text col-sm-6 border-right border-top p-3">
@@ -70,7 +73,7 @@
                         <ul class="list-group list-group-flush" id="my-post-list">
 	                       {% for post in user_post_list %}
 	                           <li class="list-group-item">
-	                               <span class="font-weight-bold h6">{{ post.user.name }}</span>
+	                                <span class="font-weight-bold h6"><a href="{% url 'short_post:home'%}">{{ post.user.name }}</a></span>
 	                               <p>{{ post.content | linebreaksbr}}</p>
 	                               <form class="favolite-form">
 	                                   <input type="hidden" name="post_id" value="{{ post.post_id }}">

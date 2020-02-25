@@ -12,4 +12,9 @@ urlpatterns = [
          views.SignupCompleteView.as_view(), name="signup_complete"),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('option/', views.OptionView.as_view(), name="option"),
+    path('password_update/',
+         views.PasswordUpdateView.as_view(), name="password_update"),
+    path('user_update/', views.UserUpdateView.as_view(), name="user_update"),
+    path('user_deleted/', views.UserDeletedView.as_view(),
+         name="user_deleted"),
 ]

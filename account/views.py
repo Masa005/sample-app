@@ -1,4 +1,5 @@
-from account.forms import LoginForm, CreateUserForm
+from account.forms import LoginForm
+from account.forms import CreateUserForm
 from django.contrib.auth import get_user_model
 from django.views import generic
 from django.urls import reverse_lazy
@@ -7,9 +8,20 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.contrib.auth.views import LoginView
-from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from account.forms import UpdateUserForm
+from account.forms import MyPasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib import messages
+from django.db import transaction
+from short_post.models import PostContent
+from short_post.models import Favorite
+from short_post.models import Follow
+from django.core.exceptions import ValidationError
+
+
+User = get_user_model()
 
 
 class LoginView(LoginView):
@@ -117,4 +129,90 @@ class OptionView(LoginRequiredMixin, generic.TemplateView):
     """
     設定画面用View
     """
-    template_name = "account/option.html"
+    template_name = 'account/option.html'
+
+    @transaction.atomic
+    def post(self, request):
+        try:
+            # ユーザーの削除を実行
+            User.objects.filter(username=request.user.username).delete()
+            # ユーザーのお気に入り削除を実行
+            Favorite.objects.filter(
+                user=request.user).delete()
+            # ユーザーの投稿に対して登録されたお気に入りの削除を実行
+            Favorite.objects.filter(
+                post_content__user=request.user).delete()
+            # ユーザーの投稿削除を実行
+            PostContent.objects.filter(
+                user=request.user).delete()
+            # フォロー削除を実行
+            Follow.objects.filter(
+                follow_user=request.user).delete()
+            # フォロワー削除を実行
+            Follow.objects.filter(
+                followed_user=request.user).delete()
+        except ValidationError:
+            messages.add_message(
+                self.request, messages.ERROR, 'ユーザー削除処理に失敗しました')
+            return redirect('sample_app:error')
+            raise ValidationError
+        return redirect('account:user_deleted')
+
+
+class PasswordUpdateView(LoginRequiredMixin, PasswordChangeView):
+    """
+    パスワード変更画面用View
+    """
+    form_class = MyPasswordChangeForm
+    success_url = reverse_lazy('account:option')
+    template_name = 'account/password_update.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'パスワードを変更しました')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        form.add_error(None, '入力項目に誤りがあります')
+        return super().form_invalid(form)
+
+
+class UserUpdateView(LoginRequiredMixin, generic.FormView):
+    """
+    プロフィール編集画面用View
+
+    """
+    form_class = UpdateUserForm
+    success_url = reverse_lazy('account:option')
+    template_name = 'account/user_update.html'
+
+    # form初期値設定
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['username'] = self.request.user.username
+        initial['name'] = self.request.user.name
+        initial['birthday'] = self.request.user.birthday
+        initial['email'] = self.request.user.email
+        initial['one_word'] = self.request.user.one_word
+        return initial
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(instance=self.request.user, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'プロフィールを変更しました')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        form.add_error(None, '入力項目に誤りがあります')
+        return super().form_invalid(form)
+
+
+class UserDeletedView(generic.TemplateView):
+
+    """
+    退会完了画面用View
+    """
+    template_name = 'account/user_deleted.html'
