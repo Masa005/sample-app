@@ -3,6 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.auth import forms as auth_forms
+# from django.forms import ModelForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm
 
 User = get_user_model()
 
@@ -70,3 +73,55 @@ class CreateUserForm(UserCreationForm):
         email = self.cleaned_data['email']
         User.objects.filter(email=email, is_active=False).delete()
         return email
+
+
+class UpdateUserForm(UserChangeForm):
+    """
+    ユーザー更新フォーム
+    """
+    password = None
+
+    class Meta:
+        model = User
+        fields = ('username', 'name', 'birthday', 'email', 'one_word')
+        one_word = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget = forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'ユーザー名を半角英数字で入力してください'})
+        self.fields['email'].widget = forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': '例）tarou@gmail.com'})
+        self.fields['name'].widget = forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'アプリ内に表示する名前を入力してください'})
+        self.fields["birthday"].widget = forms.SelectDateWidget(attrs={
+            'class': 'form-control',
+            'style': 'width: auto; display: inline-block;'},
+            years=self.create_year_choice(), empty_label=("年", "月", "日"))
+        self.fields['one_word'].widget = forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'ひとことを15文字以内で入力できます'})
+        self.fields['one_word'].required = False
+
+    def create_year_choice(self):
+        """
+        「年」セレクトボックス項目生成
+        """
+        this_yaer = datetime.datetime.now().year
+        year_choice = [i for i in range(1900, this_yaer + 1)]
+        return year_choice
+
+
+class MyPasswordChangeForm(PasswordChangeForm):
+    """
+    パスワード変更フォーム
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['placeholder'] = '半角英数字8文字以上で入力してください'

@@ -16,6 +16,9 @@
 {% block body_class %}base-body text-center{% endblock %}
 {% block body %}
     <div class="container mt-3 border">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endfor %}
         <div class="row p-2">
             <div class="col-sm-4">
                 <div class="card">
@@ -26,7 +29,7 @@
                         <div class="card-subtitle text-muted mb-2" id="{{ user.username }}">
                             {{ user.username }}
                         </div>
-                        <p class="card-text">ひとこと</p>
+                        <p class="card-text">{{ user.one_word }}</p>
                     </div>
                     <div class="row no-gutters text-left">
                     <div class="card-text col-sm-6 border-right border-top p-3">

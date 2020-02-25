@@ -37,19 +37,13 @@ $(function(){
             'dataType': 'json',
             'success':function(response){
             	if(response.status == '200'){
-            		alert('お気に入り登録しました');
         			$('#favolite-off-' + postId).hide();
         			$('#favolite-on-' + postId).show();
         			$('#all-favolite-off-' + postId).hide();
         			$('#all-favolite-on-' + postId).show();
         			$('#fav-favolite-off-' + postId).hide();
         			$('#fav-favolite-on-' + postId).show();
-            	}else{
-            		alert('お気に入り登録に失敗しました');
             	}
-            },
-            'error':function(){
-        		alert('お気に入り登録に失敗しました');
             },
 			});
 		} else {
@@ -61,7 +55,6 @@ $(function(){
 	            'dataType': 'json',
 	            'success':function(response){
 	            	if(response.status == '200'){
-	            		alert('お気に入りを削除しました');
 	        			$('#favolite-off-' + postId).show();
 	        			$('#favolite-on-' + postId).hide();
 	        			$('#myfav-favolite-off-' + postId).show();
@@ -70,13 +63,8 @@ $(function(){
 	        			$('#all-favolite-on-' + postId).hide();
 	        			$('#fav-favolite-off-' + postId).show();
 	        			$('#fav-favolite-on-' + postId).hide();
-	            	}else{
-	            		alert('お気に入り削除に失敗しました');
 	            	}
 	            },
-	            'error':function(){
-	            	alert('お気に入り削除に失敗しました');
-	            }
 			});
 		}
 	});
@@ -94,14 +82,8 @@ $(function(){
 		        'dataType': 'json',
 		        'success':function(response){
 		        	if(response.status == '200'){
-		        		alert('投稿を削除しました');
 		        		window.location.reload();
-		        	}else{
-		        		alert('投稿の削除に失敗しました');
 		        	}
-		        },
-		        'error':function(){
-	    		alert('投稿の削除に失敗しました');
 		        },
 			});
 		}
@@ -132,7 +114,7 @@ $(function(){
 		        				var replacedContent = contentLines.join('<br />');
 		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 		        				var nextPost = '<li class="list-group-item">';
-		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
@@ -357,7 +339,7 @@ $(function(){
 		        				var replacedContent = contentLines.join('<br />');
 		        				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 		        				var nextPost = '<li class="list-group-item">';
-		        				nextPost += '<span class="font-weight-bold h6">' + post.user.name + '</span>';
+		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
 		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';

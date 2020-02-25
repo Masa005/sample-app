@@ -68,11 +68,12 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
         },
     )
-    name = models.CharField(_('name'), max_length=180, blank=False)
+    name = models.CharField(_('名前'), max_length=180, blank=False)
     email = models.EmailField(_('email address'), blank=False, unique=True,
                               error_messages={'unique': _("このメールアドレスは"
                                                           "既に登録済みです。")}, )
     birthday = models.DateField(_('生年月日'), null=False)
+    one_word = models.CharField(_('ひとこと'), max_length=15)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

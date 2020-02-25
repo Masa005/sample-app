@@ -16,115 +16,18 @@
     <div class="container mt-4 mb-4 border">
         <div class="mt-4 mb-5">
             <h2 class="font-weight-bold h5">設定項目</h2>
-            <div class="list-group w-50 mx-auto">
-                <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#profile-modal">プロフィール編集</a>
-                <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#username-modal">ユーザー名変更</a>
-                <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#mail-modal">メールアドレス変更</a>
-                <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#password-modal">パスワード変更</a>
+            <div class="list-group w-50 mx-auto option-list">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success" role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <a class="list-group-item" href="{% url 'account:user_update' %}">プロフィール編集</a>
+                <a class="list-group-item" href="{% url 'account:password_update'%}">パスワード変更</a>
                 <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#withdraw-modal">退会</a>
             </div>
         </div>
     </div>
-<div class="modal fade" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-               <div class="modal-title" id="myModalLabel">プロフィール編集</div>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="profile-form">
-                    <div class="form-group text-left">
-                        <label>名前</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="form-group text-left">
-                        <label>ひとこと</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    {% csrf_token %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-                <button type="submit" class="btn btn-primary" form="profile-form">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="username-modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-               <div class="modal-title" id="myModalLabel">ユーザー名変更</div>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="username-form">
-                    <div class="form-group text-left">
-                        <label>ユーザー名</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    {% csrf_token %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-                <button type="submit" class="btn btn-primary" form="username-form">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="mail-modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-               <div class="modal-title" id="myModalLabel">メールアドレス変更</div>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="mail-form">
-                    <div class="form-group text-left">
-                        <label>メールアドレス</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    {% csrf_token %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-                <button type="submit" class="btn btn-primary" form="mail-form">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="password-modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-               <div class="modal-title" id="myModalLabel">パスワード変更</div>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="password-form">
-                    <div class="form-group text-left">
-                        <label>現在のパスワード</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="form-group text-left">
-                        <label>新しいパスワード</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="form-group text-left">
-                        <label>パスワードを確認</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    {% csrf_token %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-                <button type="submit" class="btn btn-primary" form="password-form">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="withdraw-modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -75,6 +75,8 @@ class HomeView(LoginRequiredMixin, generic.FormView):
         post = form.save(commit=False)
         post.user = self.request.user
         post.save()
+        messages.add_message(self.request, messages.INFO,
+                             '投稿しました')
         return super().form_valid(form)
 
 
@@ -136,6 +138,8 @@ class TimeLineView(LoginRequiredMixin, generic.FormView):
         post = form.save(commit=False)
         post.user = self.request.user
         post.save()
+        messages.add_message(self.request, messages.INFO,
+                             '投稿しました')
         return super().form_valid(form)
 
 
@@ -223,7 +227,7 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
             messages.add_message(self.request, messages.ERROR,
                                  'そのユーザーは存在しません')
             return redirect('sample_app:error')
-        initial["followed_user"] = request_user
+        initial['followed_user'] = request_user
         return initial
 
     def form_valid(self, form):
@@ -243,12 +247,16 @@ class OtherUserView(LoginRequiredMixin, generic.FormView):
             # フォロー登録を行う
             follow_form.follow_user = self.request.user
             follow_form.save()
+            messages.add_message(self.request, messages.INFO,
+                                 'フォローしました')
             return super().form_valid(form)
         else:
             # フォロー削除を行う
             Follow.objects.filter(
                 follow_user__username=self.request.user.username,
                 followed_user=follow_form.followed_user).delete()
+            messages.add_message(self.request, messages.INFO,
+                                 'フォローを解除しました')
             return super().form_valid(form)
 
 
@@ -259,6 +267,7 @@ class FollowFollowerView(LoginRequiredMixin, generic.TemplateView):
     template_name = "short_post/follow_follower.html"
 
     def get(self, request):
+        print(request)
         if 'username' in self.request.GET:
             request_username = self.request.GET.get('username')
             try:
@@ -551,4 +560,6 @@ def post_delete_api(request):
     except ValidationError:
         return JsonResponse(data={'status': '204'})
         raise ValidationError
+    messages.add_message(request, messages.INFO,
+                         '投稿を削除しました')
     return JsonResponse(data={'status': '200'})
