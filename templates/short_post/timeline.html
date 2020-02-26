@@ -77,19 +77,19 @@
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
-                                   <form class="favolite-form">
+                                   <form class="favorite-form">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                        {% if post.prefetch_favorite %}
-                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
-                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
-                                               <i class="far fa-star favolite-off" style="display: none;" id="favolite-off-{{ post.post_id }}"></i>
-                                               <i class="fas fa-star favolite-on"  id="favolite-on-{{ post.post_id }}"></i>
+                                           <button type="submit" class="btn rounded-circle p-0 favorite-btn active" style="width:2rem;height:2rem;
+                                               background:#f0f8ff;" onfocus="this.blur();" id="favorite-btn-{{ post.post_id }}">
+                                               <i class="far fa-star favorite-off" style="display: none;" id="favorite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favorite-on"  id="favorite-on-{{ post.post_id }}"></i>
                                            </button>
                                        {% else %}
-                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
-                                               background:#f0f8ff;" onfocus="this.blur();" id="favolite-btn-{{ post.post_id }}">
-                                               <i class="far fa-star favolite-off" id="favolite-off-{{ post.post_id }}"></i>
-                                               <i class="fas fa-star favolite-on" style="display: none;" id="favolite-on-{{ post.post_id }}"></i>
+                                           <button type="submit" class="btn rounded-circle p-0 favorite-btn" style="width:2rem;height:2rem;
+                                               background:#f0f8ff;" onfocus="this.blur();" id="favorite-btn-{{ post.post_id }}">
+                                               <i class="far fa-star favorite-off" id="favorite-off-{{ post.post_id }}"></i>
+                                               <i class="fas fa-star favorite-on" style="display: none;" id="favorite-on-{{ post.post_id }}"></i>
                                            </button>
                                        {% endif %}
                                        {% csrf_token %}
@@ -114,19 +114,19 @@
                                        <span class="font-weight-bold h6"><a href="{% url 'short_post:other_user'%}?username={{ post.user.username }}">{{ post.user.name }}</a></span>
                                    {% endif %}
                                    <p>{{ post.content | linebreaksbr}}</p>
-                                   <form class="favolite-form">
+                                   <form class="favorite-form">
                                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
                                            {% if post.prefetch_favorite %}
-	                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn active" style="width:2rem;height:2rem;
-	                                               background:#f0f8ff;" onfocus="this.blur();" id="all-favolite-btn-{{ post.post_id }}">
-	                                               <i class="far fa-star favolite-off" style="display: none;" id="all-favolite-off-{{ post.post_id }}"></i>
-	                                               <i class="fas fa-star favolite-on" id="all-favolite-on-{{ post.post_id }}"></i>
+	                                           <button type="submit" class="btn rounded-circle p-0 favorite-btn active" style="width:2rem;height:2rem;
+	                                               background:#f0f8ff;" onfocus="this.blur();" id="all-favorite-btn-{{ post.post_id }}">
+	                                               <i class="far fa-star favorite-off" style="display: none;" id="all-favorite-off-{{ post.post_id }}"></i>
+	                                               <i class="fas fa-star favorite-on" id="all-favorite-on-{{ post.post_id }}"></i>
 	                                           </button>
                                            {% else %}
-	                                           <button type="submit" class="btn rounded-circle p-0 favolite-btn" style="width:2rem;height:2rem;
-	                                               background:#f0f8ff;" onfocus="this.blur();" id="all-favolite-btn-{{ post.post_id }}">
-	                                               <i class="far fa-star favolite-off" id="all-favolite-off-{{ post.post_id }}"></i>
-	                                               <i class="fas fa-star favolite-on" style="display: none;" id="all-favolite-on-{{ post.post_id }}"></i>
+	                                           <button type="submit" class="btn rounded-circle p-0 favorite-btn" style="width:2rem;height:2rem;
+	                                               background:#f0f8ff;" onfocus="this.blur();" id="all-favorite-btn-{{ post.post_id }}">
+	                                               <i class="far fa-star favorite-off" id="all-favorite-off-{{ post.post_id }}"></i>
+	                                               <i class="fas fa-star favorite-on" style="display: none;" id="all-favorite-on-{{ post.post_id }}"></i>
 	                                           </button>
                                            {% endif %}
                                        {% csrf_token %}
