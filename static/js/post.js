@@ -20,16 +20,16 @@ $(function(){
 	var myUserName = $('#my-username').prop('value');
 
 	//お気に入りボタン制御
-	$(document).on('submit','.favolite-form',function(event) {
+	$(document).on('submit','.favorite-form',function(event) {
 		var postId = $(this).children("input").val();
 		event.preventDefault();
-		$('#favolite-btn-' + postId).toggleClass('active');
-		$('#fav-favolite-btn-' + postId).toggleClass('active');
-		$('#all-favolite-btn-' + postId).toggleClass('active');
+		$('#favorite-btn-' + postId).toggleClass('active');
+		$('#fav-favorite-btn-' + postId).toggleClass('active');
+		$('#all-favorite-btn-' + postId).toggleClass('active');
 
 		//お気に入り登録
-		if($('#favolite-btn-' + postId).hasClass('active') || $('#fav-favolite-btn-' + postId).hasClass('active')
-				|| $('#all-favolite-btn-' + postId).hasClass('active')){
+		if($('#favorite-btn-' + postId).hasClass('active') || $('#fav-favorite-btn-' + postId).hasClass('active')
+				|| $('#all-favorite-btn-' + postId).hasClass('active')){
 			$.ajax({
 			'url': '../favorite_add/',
             'type': 'POST',
@@ -37,12 +37,12 @@ $(function(){
             'dataType': 'json',
             'success':function(response){
             	if(response.status == '200'){
-        			$('#favolite-off-' + postId).hide();
-        			$('#favolite-on-' + postId).show();
-        			$('#all-favolite-off-' + postId).hide();
-        			$('#all-favolite-on-' + postId).show();
-        			$('#fav-favolite-off-' + postId).hide();
-        			$('#fav-favolite-on-' + postId).show();
+        			$('#favorite-off-' + postId).hide();
+        			$('#favorite-on-' + postId).show();
+        			$('#all-favorite-off-' + postId).hide();
+        			$('#all-favorite-on-' + postId).show();
+        			$('#fav-favorite-off-' + postId).hide();
+        			$('#fav-favorite-on-' + postId).show();
             	}
             },
 			});
@@ -55,14 +55,14 @@ $(function(){
 	            'dataType': 'json',
 	            'success':function(response){
 	            	if(response.status == '200'){
-	        			$('#favolite-off-' + postId).show();
-	        			$('#favolite-on-' + postId).hide();
-	        			$('#myfav-favolite-off-' + postId).show();
-	        			$('#myfav-favolite-on-' + postId).hide();
-	        			$('#all-favolite-off-' + postId).show();
-	        			$('#all-favolite-on-' + postId).hide();
-	        			$('#fav-favolite-off-' + postId).show();
-	        			$('#fav-favolite-on-' + postId).hide();
+	        			$('#favorite-off-' + postId).show();
+	        			$('#favorite-on-' + postId).hide();
+	        			$('#myfav-favorite-off-' + postId).show();
+	        			$('#myfav-favorite-on-' + postId).hide();
+	        			$('#all-favorite-off-' + postId).show();
+	        			$('#all-favorite-on-' + postId).hide();
+	        			$('#fav-favorite-off-' + postId).show();
+	        			$('#fav-favorite-on-' + postId).hide();
 	            	}
 	            },
 			});
@@ -116,23 +116,23 @@ $(function(){
 		        				var nextPost = '<li class="list-group-item">';
 		        				nextPost += '<span class="font-weight-bold h6"><a href="../home">' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
 		        				if(post.prefetch_favorite.length == 1){
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
 		        				}else{
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
 		        				}
 		        				if(post.prefetch_favorite.length == 1){
-		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        					nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}else{
-		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        					nextPost += '<i class="far fa-star favorite-off" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" style="display: none;" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>';
@@ -180,13 +180,13 @@ $(function(){
 		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_content.post_id + '>';
-			        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'fav-favolite-btn-' + post.post_content.post_id + '>';
-		        				nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
-		        				nextPost += '<i class="fas fa-star favolite-on" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
+			        					id=' + 'fav-favorite-btn-' + post.post_content.post_id + '>';
+		        				nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'fav-favorite-off-' + post.post_content.post_id + '></i>';
+		        				nextPost += '<i class="fas fa-star favorite-on" id=' + 'fav-favorite-on-' + post.post_content.post_id + '></i>';
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
 		        				nextPost += '</form>';
@@ -223,23 +223,23 @@ $(function(){
 		        				var nextPost = '<li class="list-group-item">';
 		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
 		        				if(post.prefetch_favorite.length == 1){
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
 		        				}else{
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
 		        				}
 		        				if(post.prefetch_favorite.length == 1){
-		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        					nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}else{
-		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+		        					nextPost += '<i class="far fa-star favorite-off" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" style="display: none;" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
@@ -282,20 +282,20 @@ $(function(){
 		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
 		        				if(post.prefetch_favorite.length == 1){
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'all-favolite-btn-' + post.post_id + '>';
-		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'all-favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'all-favolite-on-' + post.post_id + '></i>';
+			        					id=' + 'all-favorite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'all-favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" id=' + 'all-favorite-on-' + post.post_id + '></i>';
 		        				}else{
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'all-favolite-btn-' + post.post_id + '>';
-		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'all-favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'all-favolite-on-' + post.post_id + '></i>';
+			        					id=' + 'all-favorite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favorite-off" id=' + 'all-favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" style="display: none;" id=' + 'all-favorite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
@@ -341,20 +341,20 @@ $(function(){
 		        				var nextPost = '<li class="list-group-item">';
 		        				nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.user.username +'>' + post.user.name + '</a></span>';
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'mypos-' +  post.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'mypos-' +  post.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_id + '>';
 		        				if(Object.keys(post.prefetch_favorite).length){
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
-		        					nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" id=' + 'favolite-on-' + post.post_id + '></i>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}else{
-			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+			        				nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_id + '>';
-		        					nextPost += '<i class="far fa-star favolite-off" id=' + 'favolite-off-' + post.post_id + '></i>';
-		        					nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'favolite-on-' + post.post_id + '></i>';
+			        					id=' + 'favorite-btn-' + post.post_id + '>';
+		        					nextPost += '<i class="far fa-star favorite-off" id=' + 'favorite-off-' + post.post_id + '></i>';
+		        					nextPost += '<i class="fas fa-star favorite-on" style="display: none;" id=' + 'favorite-on-' + post.post_id + '></i>';
 		        				}
 		        				nextPost += ' </button>';
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'
@@ -399,7 +399,7 @@ $(function(){
 		        					nextPost += '<span class="font-weight-bold h6"><a href=' + '../other_user?username=' + post.post_content.user.username +'>' + post.post_content.user.name + '</a></span>';
 		        				}
 		        				nextPost += '<p>' + replacedContent + '</p>';
-		        				nextPost += '<form class="favolite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
+		        				nextPost += '<form class="favorite-form" id=' + 'myfav-' +  post.post_content.post_id + '>';
 		        				nextPost += '<input type="hidden" name="post_id" value=' + post.post_content.post_id + '>';
 		        				response.login_user_favorite_list.forEach(function(loginFav){
 			        					if( loginFav.post_content != null && loginFav.post_content.post_id == post.post_content.post_id){
@@ -407,18 +407,18 @@ $(function(){
 			        					}
 		        				});
 		        				if(favFlg == 1){
-				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn active" \
+				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn active" \
 				        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-				        					id=' + 'fav-favolite-btn-' + post.post_content.post_id + '>';
-			        				nextPost += '<i class="far fa-star favolite-off" style="display: none;" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
-			        				nextPost += '<i class="fas fa-star favolite-on" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
+				        					id=' + 'fav-favorite-btn-' + post.post_content.post_id + '>';
+			        				nextPost += '<i class="far fa-star favorite-off" style="display: none;" id=' + 'fav-favorite-off-' + post.post_content.post_id + '></i>';
+			        				nextPost += '<i class="fas fa-star favorite-on" id=' + 'fav-favorite-on-' + post.post_content.post_id + '></i>';
 			        				nextPost += ' </button>';
 		        				}else{
-				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favolite-btn" \
+				        		    nextPost += '<button type="submit" class="btn rounded-circle p-0 favorite-btn" \
 			        					style="width:2rem;height:2rem;background:#f0f8ff;" onfocus="this.blur();"\
-			        					id=' + 'favolite-btn-' + post.post_content.post_id + '>';
-				        		    nextPost += '<i class="far fa-star favolite-off" id=' + 'fav-favolite-off-' + post.post_content.post_id + '></i>';
-				        		    nextPost += '<i class="fas fa-star favolite-on" style="display: none;" id=' + 'fav-favolite-on-' + post.post_content.post_id + '></i>';
+			        					id=' + 'favorite-btn-' + post.post_content.post_id + '>';
+				        		    nextPost += '<i class="far fa-star favorite-off" id=' + 'fav-favorite-off-' + post.post_content.post_id + '></i>';
+				        		    nextPost += '<i class="fas fa-star favorite-on" style="display: none;" id=' + 'fav-favorite-on-' + post.post_content.post_id + '></i>';
 				        		    nextPost += ' </button>';
 		        				}
 		        				nextPost += '<input type="hidden" name="csrfmiddlewaretoken" value=' + csrfToken + '>'

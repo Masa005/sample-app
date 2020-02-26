@@ -514,19 +514,19 @@ def favorite_add_api(request):
     request_post_id = request.POST.get('post_id')
     try:
         reqest_post_content = PostContent(post_id=request_post_id)
-        favolite_count = Favorite.objects.filter(
+        favorite_count = Favorite.objects.filter(
             user=request.user, post_content=reqest_post_content
                                                  ).count()
-        favolite = Favorite(user=request.user,
+        favorite = Favorite(user=request.user,
                             post_content=reqest_post_content)
     except ValidationError:
             return JsonResponse(data={'status': '204'})
 
     # 既にお気に入り登録されている場合は登録しない
-    if(favolite_count >= 1):
+    if(favorite_count >= 1):
         return JsonResponse(data={'status': '204'})
     # お気に入り登録を実行
-    favolite.save()
+    favorite.save()
     return JsonResponse(data={'status': '200'})
 
 
