@@ -9,7 +9,6 @@ EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
-DATABASES = os.environ['DATABASES']
 ALLOWD_HOSTS = os.environ['ALLOWD_HOSTS']
 
 if not DEBUG:
