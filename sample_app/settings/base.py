@@ -16,12 +16,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -36,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'widget_tweaks',
     'account',
     'short_post',
     'rest_framework',
@@ -78,7 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sample_app.wsgi.application'
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -101,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -115,7 +110,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -126,7 +120,7 @@ STATICFILES_DIRS = (
 )
 
 # アクティベーションURLの期限:1日以内
-ACTIVATION_TIMEOUT_SECONDS = 60*60*24
+ACTIVATION_TIMEOUT_SECONDS = 60 * 60 * 24
 
 # ログインしていないときのリダイレクト先
 LOGIN_URL = '/sample_app'
