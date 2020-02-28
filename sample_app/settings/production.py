@@ -2,7 +2,9 @@ from .base import *
 
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
-ADMINS = os.environ['ADMINS']
+ADMINS = (
+    ('Admin', os.environ['Admin'])
+)
 SERVER_EMAIL = os.environ['SERVER_EMAIL']
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']
