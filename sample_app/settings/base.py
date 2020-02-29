@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'account',
     'short_post',
     'rest_framework',
+    'whitenoise.runserver_nostatic',
 ]
 
 # Application definition
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'urls'
@@ -118,6 +120,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # アクティベーションURLの期限:1日以内
 ACTIVATION_TIMEOUT_SECONDS = 60 * 60 * 24
