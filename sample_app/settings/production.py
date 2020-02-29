@@ -1,4 +1,5 @@
 from .base import *
+import django_heroku
 
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
@@ -13,9 +14,7 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 ALLOWD_HOSTS = os.environ['ALLOWD_HOSTS']
 
-if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
 
 # 共通設定
 BASE_DIR
